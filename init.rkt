@@ -26,31 +26,68 @@
     
     
 
-(define players%
+(define player%
   (class on-screen%
     (super-new)
-    
-  (field (hp 2)) ; hitpoints
+    (field (hp 2)) ; hitpoints
   
-  ;---------------set-methods-------------------
-  (define/public (set-hp! new-hp) (set! hp new-hp))
+    ;---------------set-methods-------------------
+    (define/public (set-hp! new-hp) (set! hp new-hp))
   
+    ;---------------get-methods------------------
+    (define/public (get-hp) hp)
+    (define/public (alive?) (not (= hp 0)))
   
-  ;---------------get-methods-------------------
-  (define/public (get-hp) hp)
-  (define/public (alive?) (not (= hp 0)))
-  
-  ;----------------actions----------------------
-  
-  (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (display "Error already dead!")))
-  
-  (define/public (throw!) (display "Throwing snowball...")))) ;; Temporary
+    ;---------------actions----------------------
+    (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (display "Error already dead!")))
+    (define/public (throw!) (display "Throwing snowball...")))) ;; Temporary
   
 
+
+(define snowball%
+  (class on-screen%
+    (super-new)
+    (inherit-field)
+    (field (speed 0) (distance 5)) ; speed is negative for snowballs thrown left
+    
+    ;---------------set-methods-----------------
+    (define/public (set-throw_param! new-speed new-distance) (begin (set! speed new-speed) 
+                                                             (set! distance new-distance)))
+    
+    (define/public (set-power! power) (begin (set! speed power) 
+                                             (set! distance (abs power)))) ; likely to be modifyed
+    
+    ;---------------get-methods------------------
+    (define/public (get-speed) speed)
+    (define/public (get-distance) distance)
+    
+    ;---------------actions---------------------
+    (define/public (move) ; Returns #t when maximum distance is reached
+      (begin (send this set-x! (+ (send this get-x) speed)) 
+             (set! distance (- distance 1)) (= distance 0)))))
+
+
+(define bunker%
+  (class on-screen%
+    (super-new)
+    (field (hp 100)) ; hitpoints
   
+    ;---------------set-methods-------------------
+    (define/public (set-hp! new-hp) (set! hp new-hp))
+  
+    ;---------------get-methods------------------
+    (define/public (get-hp) hp)
+    (define/public (broken?) (not (= hp 0)))
+    ;---------------actions----------------------
+    (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (display "Error already broken!")))))
+  
+    
 ;---------testing--------------
 (define *test-osc* (new on-screen%))
 (send *test-osc* set-xy! 1 2)
 
-(define *test-pla* (new players%))
-(send *test-pla* get-hp)
+(define *test-pla* (new player%))
+
+(define *test-snow* (new snowball%))
+
+(define *test-bunker* (new bunker%))
