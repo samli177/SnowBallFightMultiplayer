@@ -4,7 +4,7 @@
   (class object%
     (super-new)
     
-    (field (x 0) (y 0)   ;; possition of object on screen 
+    (field (x 0) (y 0)   ;; position of object on screen 
            (sx 0) (sy 0) ;; space occupied by object on screen
            (sprite ""))  ;; path to image representing object on screen
     
@@ -40,7 +40,7 @@
   
     ;---------------actions----------------------
     (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (display "Error already dead!")))
-    (define/public (throw!) (display "Throwing snowball...")))) ;; Temporary
+    (define/public (throw) (new snowball%))))
   
 
 
