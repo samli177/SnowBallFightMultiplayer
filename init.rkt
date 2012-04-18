@@ -47,7 +47,7 @@
 (define snowball%
   (class on-screen%
     (super-new)
-    (inherit-field)
+    (inherit set-x! get-x)
     (field (speed 0) (distance 5)) ; speed is negative for snowballs thrown left
     
     ;---------------set-methods-----------------
@@ -63,8 +63,8 @@
     
     ;---------------actions---------------------
     (define/public (move) ; Returns #t when maximum distance is reached
-      (begin (send this set-x! (+ (send this get-x) speed)) 
-             (set! distance (- distance 1)) (= distance 0)))))
+      (begin (set-x! (+ (get-x) speed)) 
+             (set! distance (- distance 1)) (= distance 0)))
 
 
 (define bunker%
