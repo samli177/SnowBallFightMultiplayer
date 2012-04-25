@@ -46,7 +46,7 @@
     ;---------------actions----------------------
     (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (display "Error already dead!")))
     (define/public (throw) (new snowball% 
-                                [sprite (make-object bitmap% "snowball.jpg" 'unknown #f)]
+                                [sprite (make-object bitmap% "snowball.png" 'png/alpha #f)]
                                 [x (get-x)]
                                 [y (get-y)]))))
   
@@ -56,7 +56,7 @@
   (class on-screen%
     (super-new)
     (inherit set-x! get-x)
-    (init-field (speed 1) (distance 5)) ; speed is negative for snowballs thrown left
+    (init-field (speed 6) (distance 5)) ; speed is negative for snowballs thrown left
     
     ;---------------set-methods-----------------
     (define/public (set-throw_param! new-speed new-distance) (begin (set! speed new-speed) 
@@ -103,7 +103,7 @@
 ;----------instances-------------
 
 (define *player*
-  (new player% [sprite (make-object bitmap% "testbild.jpg" 'unknown #f)]))
+  (new player% [sprite (make-object bitmap% "testbild.png" 'png/alpha #f)]))
 
 
 
