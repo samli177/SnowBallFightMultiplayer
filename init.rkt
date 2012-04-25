@@ -4,7 +4,7 @@
   (class object%
     (super-new)
     
-    (field (x 0) (y 0)   ;; position of object on screen 
+    (init-field (x 0) (y 0)   ;; position of object on screen 
            (sx 0) (sy 0) ;; space occupied by object on screen
            (sprite ""))  ;; path to image representing object on screen
     
@@ -17,20 +17,24 @@
     (define/public (set-sy! new-sy) (set! sy new-sy))
     (define/public (set-sprite! new-sprite) (set! sprite new-sprite))
     
-    ;;--------------get-methods-------------------
+    ;--------------get-methods-------------------
     (define/public (get-x) x)
     (define/public (get-y) y)
     (define/public (get-sx) sx)
     (define/public (get-sy) sy)
-    (define/public (get-sprite) sprite)))
+    (define/public (get-sprite) sprite)
+    
+    ;--------------actions--------------------
+    
+    (define/public (move) #f)))
     
     
 
 (define player%
   (class on-screen%
-    (inherit set-xy! get-sx)
+    (inherit get-x get-y)
     (super-new)
-    (field (hp 2)) ; hitpoints
+    (init-field (hp 2)) ; hitpoints
   
     ;---------------set-methods-------------------
     (define/public (set-hp! new-hp) (set! hp new-hp))
@@ -41,7 +45,10 @@
   
     ;---------------actions----------------------
     (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (display "Error already dead!")))
-    (define/public (throw) (begin (define snowball (new snowball%)) (send snowball set-xy! 0 0) snowball))))
+    (define/public (throw) (new snowball% 
+                                [sprite (make-object bitmap% "snowball.jpg" 'unknown #f)]
+                                [x (get-x)]
+                                [y (get-y)]))))
   
 
 
@@ -49,7 +56,7 @@
   (class on-screen%
     (super-new)
     (inherit set-x! get-x)
-    (field (speed 0) (distance 5)) ; speed is negative for snowballs thrown left
+    (init-field (speed 1) (distance 5)) ; speed is negative for snowballs thrown left
     
     ;---------------set-methods-----------------
     (define/public (set-throw_param! new-speed new-distance) (begin (set! speed new-speed) 
@@ -63,7 +70,7 @@
     (define/public (get-distance) distance)
     
     ;---------------actions---------------------
-    (define/public (move) ; Returns #t when maximum distance is reached
+    (define/override (move) ; Returns #t when maximum distance is reached
       (begin (set-x! (+ (get-x) speed)) 
              (set! distance (- distance 1)) (= distance 0)))))
 
@@ -96,16 +103,16 @@
 ;----------instances-------------
 
 (define *player*
-  (new player%))
+  (new player% [sprite (make-object bitmap% "testbild.jpg" 'unknown #f)]))
+
+
 
 
 ;------------pictures-----------
 
-(define *image* (make-object bitmap% "testbild.jpg" 'unknown #f))
-(define *snowpic* (make-object bitmap% "snowball.jpg" 'unknown #f))
-(background 0 200 150)
 
 
+(define *object-list* (cons *player* null))
 
 
 
