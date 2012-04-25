@@ -34,15 +34,35 @@
 (define my-canvas% 
   (class canvas%
     (override on-char)
+    (override on-event)
     (init-field (key-callback #f))
+    (init-field (mouse-callback #f))
     (define (on-char event)
       (when key-callback
         (key-callback event)))
-    (super-instantiate ()))) 
+    (define (on-event event) 
+      (when mouse-callback
+        (mouse-callback event)))
+    (super-instantiate ())))
 
-(define (key-fn key-event)
-  (let ((key (send key-event get-key-code)))
-    (send (get-field key-handler new-game) on-key key-event)))
+
+(define (mouse-fn mouse-event)
+  (let ((x (send mouse-event get-x))
+        (y (send mouse-event get-y))
+        (type (send mouse-event get-event-type)))
+    (case type
+      ((leave) null)
+      ((left-down)
+       (send *player* throw))
+      ((right-down)
+       (background 0 0 0))
+      ((motion)
+       (send new-game update-mouse x y))
+    )))
+
+
+
+
 
 (define (draw-canvas canvas dc)
   (send dc draw-bitmap (get-buffer *gui*) 0 0))
@@ -124,33 +144,7 @@
 (define *black-brush* 
   (send the-brush-list find-or-create-brush "black" 'solid))
 
-;; --------------------------------------------------------------------
-;; The animation loop
-;; --------------------------------------------------------------------
 
-;(define *should-run* #f)
-;
-;(define (start-loop)
-;  (when (not *should-run*)
-;    (set! *should-run* #t)
-;    (thread loop)
-;    (show-gui *gui*)))
-;
-;(define (stop-loop)
-;  (set! *should-run* #f))
-;
-;(define (fps->seconds fps)
-;  (/ 1 fps))
-;
-;(define *sleep-time* (fps->seconds 60))
-;
-;(define (loop)
-;  (when *should-run*
-;    (trandencent)
-;    (update)
-;    (draw)
-;    (sleep *sleep-time*)
-;    (loop)))
 
 ;; --------------------------------------------------------------------
 ;; The GUI and its components (buttons, menus etc)
@@ -158,11 +152,6 @@
 
 (define *frame* (make-object frame% "Ben is awesome"))
 
-;(instantiate button% 
-;  ("Quit" *frame* (lambda (e b) (hide-gui *gui*)))
-;  (horiz-margin 2)
-;  (vert-margin 2)
-;  (stretchable-width #f))
 
 (define *menu-bar* 
   (instantiate menu-bar%
@@ -179,7 +168,7 @@
   (instantiate my-canvas% ()
     (parent *frame*)
     (paint-callback draw-canvas)
-    (key-callback key-fn)
+    (mouse-callback mouse-fn)
     (min-height 672)
     (min-width 672)
     (stretchable-width #f) 

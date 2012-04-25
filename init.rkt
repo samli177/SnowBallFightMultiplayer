@@ -28,6 +28,7 @@
 
 (define player%
   (class on-screen%
+    (inherit set-xy! get-sx)
     (super-new)
     (field (hp 2)) ; hitpoints
   
@@ -40,7 +41,7 @@
   
     ;---------------actions----------------------
     (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (display "Error already dead!")))
-    (define/public (throw) (new snowball%))))
+    (define/public (throw) (begin (define snowball (new snowball%)) (send snowball set-xy! 0 0) snowball))))
   
 
 
@@ -52,7 +53,7 @@
     
     ;---------------set-methods-----------------
     (define/public (set-throw_param! new-speed new-distance) (begin (set! speed new-speed) 
-                                                             (set! distance new-distance)))
+                                                                    (set! distance new-distance)))
     
     (define/public (set-power! power) (begin (set! speed power) 
                                              (set! distance (abs power)))) ; likely to be modifyed
@@ -64,7 +65,7 @@
     ;---------------actions---------------------
     (define/public (move) ; Returns #t when maximum distance is reached
       (begin (set-x! (+ (get-x) speed)) 
-             (set! distance (- distance 1)) (= distance 0)))
+             (set! distance (- distance 1)) (= distance 0)))))
 
 
 (define bunker%
@@ -91,3 +92,22 @@
 (define *test-snow* (new snowball%))
 
 (define *test-bunker* (new bunker%))
+
+;----------instances-------------
+
+(define *player*
+  (new player%))
+
+
+;------------pictures-----------
+
+(define *image* (make-object bitmap% "testbild.jpg" 'unknown #f))
+(define *snowpic* (make-object bitmap% "snowball.jpg" 'unknown #f))
+(background 0 200 150)
+
+
+
+
+
+
+
