@@ -29,10 +29,14 @@
       )
     
     (define (update)
-      (define templist (cons (car *object-list*) (cdr *object-list*)))
-      (for-each (lambda (object) (if (send object move) (display "removing snowball"))) templist)
+      (update-snowballs)
       (send *player* set-xy! mouse-x mouse-y)
       (draw))
+    
+    (define (update-snowballs)
+      (define templist (cons (car *object-list*) (cdr *object-list*))) ;; creates new list with the same elements as *object-list*
+      (for-each (lambda (object) (if (send object move) (set! templist (remove object templist eq?)))) *object-list*) 
+      (set! *object-list* templist))
     
     (define/public (update-mouse x y)
       (set! mouse-x x)
