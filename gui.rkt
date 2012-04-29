@@ -53,7 +53,10 @@
     (case type
       ((leave) null)
       ((left-down)
-       (set! *object-list* (cons (send *player* throw) *object-list*))) ;if this goes slow, try change to mcons instead of cons
+       (begin
+       (semaphore-wait sync-semaphore)
+       (set! *object-list* (cons (send *player* throw) *object-list*)))
+       (semaphore-post sync-semaphore));if this goes slow, try change to mcons instead of cons
       ;left mouse click causes player to throw, and adds the object snowball in the *object-list*
       ((right-down)
        (background 0 0 0))

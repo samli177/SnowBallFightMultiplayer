@@ -1,5 +1,8 @@
 (load "gui.rkt")
 (load "init.rkt")
+(load "networking.rkt")
+
+(define sync-semaphore (make-semaphore 1))
 ;(require graphics/graphics) seems to work without it
 
 (define Game%
@@ -35,8 +38,10 @@
     
     (define (update-snowballs)
       (define templist (cons (car *object-list*) (cdr *object-list*))) ;; creates new list with the same elements as *object-list*
-      (for-each (lambda (object) (if (send object move) (set! templist (remove object templist eq?)))) *object-list*) 
-      (set! *object-list* templist))
+      (for-each (lambda (object) (if (send object move) (set! templist (remove object templist eq?)))) *object-list*)
+      (semaphore-wait sync-semaphore)
+      (set! *object-list* templist)
+      (semaphore-post sync-semaphore))
     
     (define/public (update-mouse x y)
       (set! mouse-x x)
