@@ -9,6 +9,7 @@
 (define *remote-word-list* '())
 (define *remote-object-list* '())
 (define *outgoing-object-list* '())
+(define *change-check* '())
 
 (define *rol-semaphore* (make-semaphore 1))
 
@@ -31,14 +32,16 @@
     (set! *remote-word-list* (read-line *inport* 'any))
     (if (eof-object? *remote-word-list*) (display "Error: eof-object")
         (interpet *remote-word-list*))
-    (delay 20)
     (loop))
   (loop))
   
 (define (send-thread)
   (define (loop)
-    (send-string (make-message *object-list*))
+    (when (not (eq? *change-check* *object-list*)) 
+      (begin(send-string (make-message *object-list*)) (set! *change-check* *object-list*)))
+    (sleep .01)
     (loop))
+  (set! *change-check* *object-list*)
   (loop))
 
 (define (make-message lst)
@@ -68,7 +71,6 @@
 
 (define (interpet str)
   (set! *remote-word-list* (string->wordlist str))
-  (display *remote-word-list*)
   (update-remote-objectlist *remote-word-list*))
 
 (define (update-remote-objectlist lst)
