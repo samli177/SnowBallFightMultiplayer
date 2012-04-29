@@ -22,14 +22,18 @@
     
     (define (draw)
       (clear)
+      (draw-object-list *object-list*)
+      (draw-object-list (get-remote-objects))
+      ;(draw-pic *image* mouse-x mouse-y);(draw-pic character characterx charactery). Draws a picture where the mouse is. 
+      (show)
+      )
+    
+    (define (draw-object-list object-list)
       (for-each (lambda (object)           ;iterates through a list with all the objects and draws the objects images on the objects coordinates
                                 (draw-pic (send object get-sprite)
                                           (send object get-x) 
                                           (send object get-y)))
-                *object-list* )
-      ;(draw-pic *image* mouse-x mouse-y);(draw-pic character characterx charactery). Draws a picture where the mouse is. 
-      (show)
-      )
+                object-list ))
     
     (define (update)
       (update-snowballs)
