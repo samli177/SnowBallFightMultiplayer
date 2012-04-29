@@ -31,6 +31,7 @@
     (set! *remote-word-list* (read-line *inport* 'any))
     (if (eof-object? *remote-word-list*) (display "Error: eof-object")
         (interpet *remote-word-list*))
+    (delay 20)
     (loop))
   (loop))
   
@@ -67,6 +68,7 @@
 
 (define (interpet str)
   (set! *remote-word-list* (string->wordlist str))
+  (display *remote-word-list*)
   (update-remote-objectlist *remote-word-list*))
 
 (define (update-remote-objectlist lst)
@@ -121,5 +123,5 @@
 (define (get-remote-objects)
   *remote-object-list*)
   
-(define (start-send lst)
+(define (start-send)
   (thread send-thread))
