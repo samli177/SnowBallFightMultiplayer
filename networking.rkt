@@ -40,7 +40,7 @@
   (define (loop)
     (when (and (not (eq? *change-check* *object-list*)) *sync*) 
       (begin(send-string (make-message *object-list*)) (set! *change-check* *object-list*)
-            (set! *sync* #f)))
+            (set! *sync* #f) (display " :sync set to #f: ")))
     (sleep .01)
     (loop))
   (set! *change-check* *object-list*)
@@ -73,8 +73,8 @@
 
 (define (interpet str)
   (set! *remote-word-list* (string->wordlist str))
-  (if (eq? (string->symbol (car *remote-word-list*)) 'sync) (set! *sync* #t) 
-      (update-remote-objectlist *remote-word-list*)))
+  (if (eq? (string->symbol (car *remote-word-list*)) 'sync) (begin (set! *sync* #t) (display " :sync set to #t: ") 
+      (update-remote-objectlist *remote-word-list*))))
 
 (define (update-remote-objectlist lst)
   (let ((temp-object-list '()))
