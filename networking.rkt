@@ -34,7 +34,6 @@
     (if (eof-object? *remote-word-list*) (display "Error: eof-object")
         (interpet *remote-word-list*))
     (send-string "sync")
-    (display "sync sent")
     (loop))
   (loop))
   
@@ -42,8 +41,7 @@
   (define (loop)
     (when (and (not (eq? *change-check* *object-list*)) *sync*) 
       (begin(send-string (make-message *object-list*)) (set! *change-check* *object-list*)
-            (set! *sync* #f)
-            (display "sync set to false")))
+            (set! *sync* #f)))
     (sleep .01)
     (loop))
   (set! *change-check* *object-list*)
