@@ -12,8 +12,7 @@
            (HEIGHT 21)
            (*should-run* #f)
            (mouse-x 0)
-           (mouse-y 0)
-           )
+           (mouse-y 0))
     
     (define/public (get-width) WIDTH)
     (define/public (get-height) HEIGHT)
@@ -25,15 +24,14 @@
       (draw-object-list *object-list*)
       (draw-object-list (get-remote-objects))
       ;(draw-pic *image* mouse-x mouse-y);(draw-pic character characterx charactery). Draws a picture where the mouse is. 
-      (show)
-      )
+      (show))
     
     (define (draw-object-list object-list)
       (for-each (lambda (object)           ;iterates through a list with all the objects and draws the objects images on the objects coordinates
                                 (draw-pic (send object get-sprite)
                                           (send object get-x) 
                                           (send object get-y)))
-                object-list ))
+                object-list))
     
     (define (update)
       (update-snowballs)
@@ -46,6 +44,8 @@
       (semaphore-wait sync-semaphore)
       (set! *object-list* templist)
       (semaphore-post sync-semaphore))
+   
+    
     
     (define/public (update-mouse x y)
       (set! mouse-x x)
@@ -53,8 +53,7 @@
     
        
     (define/public (pause-update)
-      (set! *should-run* #f)
-      )
+      (set! *should-run* #f))
     
     (define/public (exit-game)
       (pause-update)
@@ -70,10 +69,7 @@
         (show-gui *gui*)))
     
     (define/public (start-game)
-      (start-update)
-      )
-    )
-  )
+      (start-update))))
 
 (define new-game (new Game%))
 (send new-game start-game)

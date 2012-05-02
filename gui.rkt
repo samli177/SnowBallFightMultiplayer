@@ -46,33 +46,31 @@
     (super-instantiate ())))
 
 
-(define (mouse-fn mouse-event)
-  (let ((x (send mouse-event get-x))
-        (y (send mouse-event get-y))
-        (type (send mouse-event get-event-type)))
-    (case type
-      ((leave) null)
-      ((left-down)
-       (begin
-       (semaphore-wait sync-semaphore)
-       (set! *object-list* (cons (send *player* throw) *object-list*)))
-       (semaphore-post sync-semaphore));if this goes slow, try change to mcons instead of cons
-      ;left mouse click causes player to throw, and adds the object snowball in the *object-list*
-      ((right-down)
-       (background 0 0 0))
-      ((motion)
-       (send new-game update-mouse x y))
-    )))
-
-
-
-
-
 (define (draw-canvas canvas dc)
   (send dc draw-bitmap (get-buffer *gui*) 0 0))
 
 (define (redraw)
   (send (get-canvas *gui*) on-paint))
+
+;; ---------------------------------------------------------------------
+;; Mouse function
+;; ---------------------------------------------------------------------
+(define (mouse-fn mouse-event)
+      (let ((x (send mouse-event get-x))
+            (y (send mouse-event get-y))
+            (type (send mouse-event get-event-type)))
+        (case type
+          ((leave) null)
+          ((left-down)
+           (begin
+             (semaphore-wait sync-semaphore)
+             (set! *object-list* (cons (send *player* throw) *object-list*)))
+           (semaphore-post sync-semaphore));if this goes slow, try change to mcons instead of cons
+          ;left mouse click causes player to throw, and adds the object snowball in the *object-list*
+          ((right-down)
+           (background 0 0 0))
+          ((motion)
+           (send new-game update-mouse x y)))))
 
 ;; ---------------------------------------------------------------------
 ;; Functions to draw
