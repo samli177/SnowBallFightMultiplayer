@@ -6,7 +6,7 @@
     
     (init-field (x 0) (y 0)   ;; position of object on screen 
            (sx 0) (sy 0) ;; space occupied by object on screen
-           (sprite ""))  ;; path to image representing object on screen
+           (sprite "")) ;; path to image representing object on screen) 
     
     
     ;---------------set-methods-------------------
@@ -17,12 +17,14 @@
     (define/public (set-sy! new-sy) (set! sy new-sy))
     (define/public (set-sprite! new-sprite) (set! sprite new-sprite))
     
+    
     ;--------------get-methods-------------------
     (define/public (get-x) x)
     (define/public (get-y) y)
     (define/public (get-sx) sx)
     (define/public (get-sy) sy)
     (define/public (get-sprite) sprite)
+    
     
     ;--------------actions--------------------
     
@@ -34,21 +36,25 @@
   (class on-screen%
     (inherit get-x get-y)
     (super-new)
-    (init-field (hp 2)) ; hitpoints
+    (init-field (hp 2)  ; hitpoints
+                (side 1)) ; possitive if player is on the left
   
     ;---------------set-methods-------------------
     (define/public (set-hp! new-hp) (set! hp new-hp))
+    (define/public (set-side! new-side) (set! side new-side))
   
     ;---------------get-methods------------------
     (define/public (get-hp) hp)
     (define/public (alive?) (not (= hp 0)))
+    (define/public (get-side) side)
   
     ;---------------actions----------------------
     (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (display "Error already dead!")))
     (define/public (throw) (new snowball% 
                                 [sprite (make-object bitmap% "snowball.png" 'png/alpha #f)]
                                 [x (get-x)]
-                                [y (get-y)]))))
+                                [y (get-y)]
+                                [speed (* side 10)]))))
   
 
 

@@ -15,7 +15,7 @@
 
 ;--------actual networking-stuff-------
 (define  (set-host! newhost)
-  (set! *host* nowhost))
+  (set! *host* newhost))
 
 (define (listen)
   (let ((listener (tcp-listen *port* 1 #t)))
