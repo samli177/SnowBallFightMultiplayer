@@ -32,8 +32,7 @@
   (define (loop)
     (set! *remote-word-list* (read-line *inport* 'any))
     (if (eof-object? *remote-word-list*) (display "Error: eof-object")
-        (interpet *remote-word-list*))
-    (send-string "sync")
+        (begin (interpet *remote-word-list*) (send-string "sync")))
     (loop))
   (loop))
   
