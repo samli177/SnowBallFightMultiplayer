@@ -73,8 +73,8 @@
 
 (define (interpet str)
   (set! *remote-word-list* (string->wordlist str))
-  (if (eq? (string->symbol (car *remote-word-list*)) 'sync) (begin (set! *sync* #t) (display " :sync set to #t: ") 
-      (update-remote-objectlist *remote-word-list*))))
+  (if (eq? (string->symbol (car *remote-word-list*)) 'sync) (begin (set! *sync* #t) (display " :sync set to #t: "))
+      (update-remote-objectlist *remote-word-list*)))
 
 (define (update-remote-objectlist lst)
   (let ((temp-object-list '()))
