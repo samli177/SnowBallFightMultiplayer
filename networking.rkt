@@ -12,6 +12,7 @@
 (define *change-check* '())
 
 (define *rol-semaphore* (make-semaphore 1))
+(define *sync* #t)
 
 ;--------actual networking-stuff-------
 (define  (set-host! newhost)
@@ -32,13 +33,15 @@
     (set! *remote-word-list* (read-line *inport* 'any))
     (if (eof-object? *remote-word-list*) (display "Error: eof-object")
         (interpet *remote-word-list*))
+    (send-string "sync")
     (loop))
   (loop))
   
 (define (send-thread)
   (define (loop)
-    (when (not (eq? *change-check* *object-list*)) 
-      (begin(send-string (make-message *object-list*)) (set! *change-check* *object-list*)))
+    (when (and (not (eq? *change-check* *object-list*)) *sync*)
+      (begin(send-string (make-message *object-list*)) (set! *change-check* *object-list*)
+            (set! *sync* #f)))
     (sleep .01)
     (loop))
   (set! *change-check* *object-list*)
@@ -71,7 +74,8 @@
 
 (define (interpet str)
   (set! *remote-word-list* (string->wordlist str))
-  (update-remote-objectlist *remote-word-list*))
+  (if (eq? (string->symbol (car *remote-word-list*)) 'sync) (set! *sync* #t) 
+      (update-remote-objectlist *remote-word-list*)))
 
 (define (update-remote-objectlist lst)
   (let ((temp-object-list '()))
