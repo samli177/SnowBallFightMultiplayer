@@ -12,6 +12,7 @@
 (define *change-check* '())
 
 (define *rol-semaphore* (make-semaphore 1))
+(define *sync* #f)
 
 ;--------actual networking-stuff-------
 (define  (set-host! newhost)
@@ -37,8 +38,8 @@
   
 (define (send-thread)
   (define (loop)
-    (when (not (eq? *change-check* *object-list*))
-      (begin(send-string (make-message *object-list*)) (set! *change-check* *object-list*)))
+    (if (and (not (eq? *change-check* *object-list*)) *sync*)
+      (begin (send-string (make-message *object-list*)) (set! *change-check* *object-list*) (set! *sync* #f)))
     (sleep .01)
     (loop))
   (set! *change-check* *object-list*)
