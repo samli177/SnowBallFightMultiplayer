@@ -30,7 +30,7 @@
 
 (define (listen-for-data)
   (define (loop)
-    (set! *remote-word-list* (read-line *inport* 'any))
+    (set! *remote-word-list* (string->wordlist (read-line *inport* 'any)))
     (if (eof-object? *remote-word-list*) (display "Error: eof-object"))
     (if (eq? (string->symbol (car *remote-word-list*)) 'sync) (set! *sync* #t)
         (begin (interpet *remote-word-list*) (send-string "sync")))
@@ -71,9 +71,8 @@
 
 ;----------------interpeting of messages--------------------
 
-(define (interpet str)
-  (set! *remote-word-list* (string->wordlist str))
-  (update-remote-objectlist *remote-word-list*))
+(define (interpet wordlst)
+  (update-remote-objectlist wordlst))
 
 (define (update-remote-objectlist lst)
   (let ((temp-object-list '()))
