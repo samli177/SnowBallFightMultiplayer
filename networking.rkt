@@ -12,7 +12,6 @@
 (define *change-check* '())
 
 (define *rol-semaphore* (make-semaphore 1))
-(define *sync* #t)
 
 ;--------actual networking-stuff-------
 (define  (set-host! newhost)
@@ -32,15 +31,14 @@
   (define (loop)
     (set! *remote-word-list* (read-line *inport* 'any))
     (if (eof-object? *remote-word-list*) (display "Error: eof-object"))
-    (begin (interpet *remote-word-list*) (send-string "sync"))
+    (interpet *remote-word-list*)
     (loop))
   (loop))
   
 (define (send-thread)
   (define (loop)
-    (when (and (not (eq? *change-check* *object-list*)) *sync*) 
-      (begin(send-string (make-message *object-list*)) (set! *change-check* *object-list*)
-            (set! *sync* #f) (display " :sync set to #f: ")))
+    (when (not (eq? *change-check* *object-list*))
+      (begin(send-string (make-message *object-list*)) (set! *change-check* *object-list*)))
     (sleep .01)
     (loop))
   (set! *change-check* *object-list*)
@@ -73,8 +71,7 @@
 
 (define (interpet str)
   (set! *remote-word-list* (string->wordlist str))
-  (if (eq? (string->symbol (car *remote-word-list*)) 'sync) (begin (set! *sync* #t) (display " :sync set to #t: "))
-      (update-remote-objectlist *remote-word-list*)))
+  (update-remote-objectlist *remote-word-list*))
 
 (define (update-remote-objectlist lst)
   (let ((temp-object-list '()))
