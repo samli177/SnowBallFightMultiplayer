@@ -36,6 +36,7 @@
     (define (update)
       (update-snowballs)
       (update-player)
+      (collisionhandler (append *object-list* (get-remote-objects)))
       (draw))
     
     (define (update-snowballs)
@@ -64,6 +65,17 @@
              (length (sqrt (+ (sqr x) (sqr y)))))
         (if (= length 0) (cons 0 0) (cons (/ x length) (/ y length)))))
       
+    (define/public (collisionhandler crashlist) 
+      (if (not (null? crashlist))
+          (begin (let ((paranoid-object (car crashlist))) 
+                   (for-each  
+                    (lambda (aggressive-object) 
+                      (if (>= (+ (send aggressive-object get-radius) (send paranoid-object get-radius))
+                              (distance paranoid-object aggressive-object)) ;combined radius of two objects
+                          (display "BANG! ")))
+                    (cdr crashlist))             
+                   (collisionhandler (cdr crashlist))))))
+    
     (define/public (update-mouse x y)
       (set! mouse-x x)
       (set! mouse-y y))
