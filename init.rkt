@@ -35,16 +35,19 @@
     (inherit get-x get-y)
     (super-new)
     (init-field (hp 2)  ; hitpoints
-                (side 1)) ; possitive if player is on the left
+                (side 1) ; possitive if player is on the left
+                (speed 30))
   
     ;---------------set-methods-------------------
     (define/public (set-hp! new-hp) (set! hp new-hp))
     (define/public (set-side! new-side) (set! side new-side))
+    (define/public (set-speed! new-speed) (set! speed new-speed))
   
     ;---------------get-methods------------------
     (define/public (get-hp) hp)
     (define/public (alive?) (not (= hp 0)))
     (define/public (get-side) side)
+    (define/public (get-speed) speed)
   
     ;---------------actions----------------------
     (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (display "Error already dead!")))
