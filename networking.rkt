@@ -108,14 +108,14 @@
 (define (remote-make-snowball . args)
   (new snowball% 
         [sprite (make-object bitmap% "snowball.png" 'png/alpha #f)]
-        [radius (send (make-object bitmap% "snowball.png" 'png/alpha #f) get-width)]
+        [radius (/ (send (make-object bitmap% "snowball.png" 'png/alpha #f) get-width) 2)]
         [x (string->number (car args))]
         [y (string->number (cadr args))]))
 
 (define (remote-make-player . args)
   (new player% 
         [sprite (make-object bitmap% "testbild.png" 'png/alpha #f)]
-        [radius (send (make-object bitmap% "testbild.png" 'png/alpha #f) get-width)]
+        [radius (/ (send (make-object bitmap% "testbild.png" 'png/alpha #f) get-width) 2)]
         [x (string->number (car args))]
         [y (string->number (cadr args))]))
 
