@@ -76,6 +76,9 @@
                     (cdr crashlist))             
                    (collisionhandler (cdr crashlist))))))
     
+    (define (distance object1 object2)
+      (sqrt (+ (sqr (- (send object1 get-x) (send object2 get-x))) (sqr (- (send object1 get-y) (send object2 get-y))))))
+    
     (define/public (update-mouse x y)
       (set! mouse-x x)
       (set! mouse-y y))
