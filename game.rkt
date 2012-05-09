@@ -1,6 +1,7 @@
 (load "gui.rkt")
 (load "init.rkt")
 (load "networking.rkt")
+(load "helpfunctions.rkt")
 
 (define sync-semaphore (make-semaphore 1))
 ;(require graphics/graphics) seems to work without it
@@ -72,17 +73,18 @@
                     (lambda (aggressive-object) 
                       (if (>= (+ (send aggressive-object get-radius) (send paranoid-object get-radius))
                               (distance paranoid-object aggressive-object)) ;combined radius of two objects
-                          (display "BANG! ")))
+                          ;(display "BANG! ")
+                          (if (and (is-a? paranoid-object player%) (occur? paranoid-object (get-remote-objects)) (is-a? aggressive-object snowball%)) (display "den andra datorns spelar är träffad"))
+                          ))
                     (cdr crashlist))             
                    (collisionhandler (cdr crashlist))))))
     
-    (define (distance object1 object2)
-      (sqrt (+ (sqr (- (send object1 get-x) (send object2 get-x))) (sqr (- (send object1 get-y) (send object2 get-y))))))
-    
+        
     (define/public (update-mouse x y)
       (set! mouse-x x)
       (set! mouse-y y))
     
+   
        
     (define/public (pause-update)
       (set! *should-run* #f))
@@ -102,6 +104,8 @@
     
     (define/public (start-game)
       (start-update))))
+
+
 
 (define new-game (new Game%))
 (send new-game start-game)
