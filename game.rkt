@@ -72,7 +72,9 @@
                     (lambda (aggressive-object) 
                       (if (>= (+ (send aggressive-object get-radius) (send paranoid-object get-radius))
                               (distance paranoid-object aggressive-object)) ;combined radius of two objects
-                          (display "BANG! ")))
+                          ;(display "BANG! ")
+                          (if (and (is-a? paranoid-object player%) (occur? paranoid-object (get-remote-objects)) (is-a? aggressive-object snowball%)) (display "den andra datorns spelar är träffad"))
+                          ))
                     (cdr crashlist))             
                    (collisionhandler (cdr crashlist))))))
     
@@ -83,6 +85,7 @@
       (set! mouse-x x)
       (set! mouse-y y))
     
+   
        
     (define/public (pause-update)
       (set! *should-run* #f))
@@ -102,6 +105,11 @@
     
     (define/public (start-game)
       (start-update))))
+
+(define (occurs? this in-this)
+      (cond ((null? in-this) #f)
+            ((eq? this (car in-this)) #t)
+            (else (occurs? this (cdr in-this)))))
 
 (define new-game (new Game%))
 (send new-game start-game)
