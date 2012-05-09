@@ -68,16 +68,19 @@
       
     (define/public (collisionhandler crashlist) 
       (if (not (null? crashlist))
-          (begin (let ((paranoid-object (car crashlist))) 
-                   (for-each  
-                    (lambda (aggressive-object) 
-                      (if (>= (+ (send aggressive-object get-radius) (send paranoid-object get-radius))
-                              (distance paranoid-object aggressive-object)) ;combined radius of two objects
-                          ;(display "BANG! ")
-                          (if (and (is-a? paranoid-object player%) (occur? paranoid-object (get-remote-objects)) (is-a? aggressive-object snowball%)) (display "den andra datorns spelar är träffad"))
-                          ))
-                    (cdr crashlist))             
-                   (collisionhandler (cdr crashlist))))))
+          (begin 
+            (let ((first-object (car crashlist))) 
+              (for-each  
+               (lambda (second-object) 
+                 (if (>= (+ (send second-object get-radius) (send first-object get-radius))
+                         (distance first-object second-object)) ;combined radius of two objects
+                     (if (or (is-a? first-object snowball%) (is-a? second-object snowball%))
+                         (snowballcollission first-object second-object))))
+                              ;(occurs? second-object (get-remote-objects))
+                               ;;only need to check if second-object is a player since the other computers player always will be last in the "remote object list"
+                         ;(begin (set! templist (remove object templist eq?)) (display "den andra datorns spelare är träffad")))))
+               (cdr crashlist)))             
+            (collisionhandler (cdr crashlist)))))
     
         
     (define/public (update-mouse x y)
@@ -105,7 +108,12 @@
     (define/public (start-game)
       (start-update))))
 
-
+(define (snowballcollission first-object second-object)
+  (if (and (is-a? first-object snowball%) (is-a? second-object player%) (occurs? first-object *object-list*) (not (eq? second-object *player*))) ;does my snowball hit the opponent?
+      (begin (display "tjena")(set! *object-list* (remove first-object *object-list* eq?))))) ;if so, remove the snowball
+    
+                                                  
+    
 
 (define new-game (new Game%))
 (send new-game start-game)
