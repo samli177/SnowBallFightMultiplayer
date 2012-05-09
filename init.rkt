@@ -32,7 +32,7 @@
 
 (define player%
   (class on-screen%
-    (inherit get-x get-y)
+    (inherit get-x get-y get-radius)
     (super-new)
     (init-field (hp 2)  ; hitpoints
                 (side 1) ; possitive if player is on the left
@@ -53,7 +53,7 @@
     (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (display "Error already dead!")))
     (define/public (throw) (new snowball% 
                                 [sprite (make-object bitmap% "snowball.png" 'png/alpha #f)]
-                                [x (get-x)]
+                                [x (* (get-side) (+ (get-radius) (get-x) 2))]
                                 [y (get-y)]
                                 [speed (* side 10)]))))
   
