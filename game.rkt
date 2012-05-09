@@ -29,8 +29,8 @@
     (define (draw-object-list object-list)
       (for-each (lambda (object)           ;iterates through a list with all the objects and draws the objects images on the objects coordinates
                                 (draw-pic (send object get-sprite)
-                                          (send object get-x) 
-                                          (send object get-y)))
+                                          (- (send object get-x) (/ (send (send object get-sprite) get-width) 2)) 
+                                          (- (send object get-y) (/ (send (send object get-sprite) get-height) 2))))
                 object-list))
     
     (define (update)
