@@ -68,7 +68,7 @@
            (semaphore-post sync-semaphore));if this goes slow, try change to mcons instead of cons
           ;left mouse click causes player to throw, and adds the object snowball in the *object-list*
           ((right-down)
-           (background 0 0 0))
+           (background (random 255) (random 255) (random 255)))
           ((motion)
            (send new-game update-mouse x y)))))
 

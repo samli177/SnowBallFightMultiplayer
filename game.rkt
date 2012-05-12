@@ -23,8 +23,7 @@
     (define (draw)
       (clear)
       (draw-object-list *object-list*)
-      (draw-object-list (get-remote-objects))
-      ;(draw-pic *image* mouse-x mouse-y);(draw-pic character characterx charactery). Draws a picture where the mouse is. 
+      (draw-object-list (get-remote-objects)) 
       (show))
     
     (define (draw-object-list object-list)
@@ -47,7 +46,7 @@
       (set! *object-list* templist)
       (semaphore-post sync-semaphore))
    
-    (define (update-player)
+    (define (update-player) ;; update player is in a need of comments =)
       (let* ((dir-v (directional-vector (send *player* get-x) (send *player* get-y) mouse-x mouse-y))
             (dir-x (car dir-v))
             (dir-y (cdr dir-v)))

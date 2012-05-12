@@ -88,6 +88,7 @@
 
 (define bunker%
   (class on-screen%
+    ;(inherit get-x get-y get-radius)
     (super-new)
     (field (hp 100)) ; hitpoints
   
@@ -118,8 +119,13 @@
 (send *player* set-radius! (round (/ (send (send *player* get-sprite) get-width) 2)))
 
 (define *bunker*
-  (new bunker% [sprite (make-object bitmap% "bunker.png" 'png/alpha #f)]))
+  (new bunker% 
+       [sprite (make-object bitmap% "bunker.png" 'png/alpha #f)]
+       [x 300]
+       [y 300]))
+
 (send *bunker* set-radius! (round (/ (send (send *bunker* get-sprite) get-width) 2)))
+
 
 ;------------pictures-----------
 
