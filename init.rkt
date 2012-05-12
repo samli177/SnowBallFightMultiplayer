@@ -126,6 +126,8 @@
 
 (send *bunker* set-radius! (round (/ (send (send *bunker* get-sprite) get-width) 2)))
 
+(define *network* (new network-session%))
+
 
 ;------------pictures-----------
 

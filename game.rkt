@@ -1,10 +1,10 @@
 (load "gui.rkt")
-(load "init.rkt")
 (load "networking.rkt")
+(load "init.rkt")
 (load "helpfunctions.rkt")
 
-(define sync-semaphore (make-semaphore 1))
 ;(require graphics/graphics) seems to work without it
+(define sync-semaphore (make-semaphore 1))
 
 (define Game%
   (class object%
@@ -23,7 +23,7 @@
     (define (draw)
       (clear)
       (draw-object-list *object-list*)
-      (draw-object-list (get-remote-objects)) 
+      (draw-object-list (send *network* get-remote-objects)) 
       (show))
     
     (define (draw-object-list object-list)
@@ -36,7 +36,7 @@
     (define (update)
       (update-snowballs)
       (update-player)
-      (collisionhandler (append *object-list* (get-remote-objects)))
+      (collisionhandler (append *object-list* (send *network* get-remote-objects)))
       (draw))
     
     (define (update-snowballs)
@@ -75,7 +75,7 @@
                          (distance first-object second-object)) ;combined radius of two objects
                      (if (or (is-a? first-object snowball%) (is-a? second-object snowball%))
                          (snowballcollission first-object second-object))))
-                              ;(occurs? second-object (get-remote-objects))
+                              ;(occurs? second-object (send *network* get-remote-objects)
                                ;;only need to check if second-object is a player since the other computers player always will be last in the "remote object list"
                          ;(begin (set! templist (remove object templist eq?)) (display "den andra datorns spelare är träffad")))))
                (cdr crashlist)))             
