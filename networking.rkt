@@ -141,7 +141,7 @@
       (display "" outport))
     
     (define/public (hit!)
-      (save-string "hit"))
+      (send-string "hit"))
     
     (define/public (connect) 
       (set!-values (inport outport) (tcp-connect host port))
