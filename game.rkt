@@ -109,10 +109,8 @@
 
 (define (snowballcollission first-object second-object)
   (if (and (is-a? first-object snowball%) (is-a? second-object player%) (occurs? first-object *object-list*) (not (eq? second-object *player*))) ;does my snowball hit the opponent?
-      (begin (display "tjena")(set! *object-list* (remove first-object *object-list* eq?))))) ;if so, remove the snowball
-    
-                                                  
-    
+      (begin (send *network* hit!)(set! *object-list* (remove first-object *object-list* eq?))))) ;if so, remove the snowball
+
 
 (define new-game (new Game%))
 (send new-game start-game)

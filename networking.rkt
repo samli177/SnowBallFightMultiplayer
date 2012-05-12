@@ -35,10 +35,7 @@
       (set! change-check *object-list*)
       (loop))
     
-    (define (send-string string)
-      (display string outport)
-      (newline outport)
-      (display "" outport))
+    
     
     ;----------------interpeting and construction of messages--------------------
     
@@ -61,7 +58,12 @@
         (msg-loop lst)))
     
     (define (interpet wordlst)
-      (update-remote-objectlist wordlst))
+      (cond 
+        ((eq? (car *object-list*) 'hit) (hit-player!))
+        (else (update-remote-objectlist wordlst))))
+    
+    (define (hit-player!)
+      (for-each (lambda (object) (if (is-a? player%) (send object hit!))) *object-list*))
     
     (define (update-remote-objectlist lst)
       (let ((temp-object-list '()))
@@ -124,11 +126,22 @@
     (define/public (set-host! new-host) (set! host new-host))
     
     ;---------------------actions---------------------------
-
+    
+    (define/public (start-send)
+      (thread send-thread))
+    
     (define/public (listen)
       (let ((listener (tcp-listen port 1 #t)))
         (set!-values (inport outport) (tcp-accept listener))
         (thread listen-for-data)))
+    
+    (define/public (send-string string)
+      (display string outport)
+      (newline outport)
+      (display "" outport))
+    
+    (define/public (hit!)
+      (save-string "hit"))
     
     (define/public (connect) 
       (set!-values (inport outport) (tcp-connect host port))
