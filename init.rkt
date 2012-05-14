@@ -69,7 +69,7 @@
                                 [sprite (make-object bitmap% "snowball.png" 'png/alpha #f)]
                                 [x (* (get-side) (+ (get-radius) (get-x) 2))]
                                 [y (get-y)]
-                                [speed (* side 10)]))
+                                [speed (* side power)]))
     ;(define/public ())
     ))
   

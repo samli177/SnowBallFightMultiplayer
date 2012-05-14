@@ -60,7 +60,7 @@
 
 (define power-timer (new timer%
                          [notify-callback power-up!]
-                         [interval 1000]
+                         [interval #f]
                          [just-once? #f]))
 
 (define (mouse-fn mouse-event)
@@ -70,7 +70,7 @@
         (case type
           ((leave) null)
           ((left-down)
-             (send power-timer start 1000))
+             (send power-timer start 40))
             
           ((left-up)
            (begin
