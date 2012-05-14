@@ -81,14 +81,13 @@
                                 [sprite (make-object bitmap% "snowball.png" 'png/alpha #f)]
                                 [x (* (get-side) (+ (get-radius) (get-x) 2))]
                                 [y (get-y)]
-<<<<<<< HEAD
                                 [speed (* side power)]))
     (define/public (update-powerbar!) (if (not (eq? power (send powerbar get-power))) (send powerbar set-power! power))))) 
-=======
+
                                 
     
     
->>>>>>> 19b165259be9b3c3bd99f08049caefbfae9f4614
+
   
 
 
