@@ -36,20 +36,25 @@
     (super-new)
     (init-field (hp 2)  ; hitpoints
                 (side 1) ; possitive if player is on the left
-                (speed 30))
+                (speed 30)
+                (power 1))
   
     ;---------------set-methods-------------------
     (define/public (set-hp! new-hp) (set! hp new-hp))
     (define/public (set-side! new-side) (set! side new-side))
     (define/public (set-speed! new-speed) (set! speed new-speed))
+    (define/public (set-power! new-power) (set! power new-power))
   
     ;---------------get-methods------------------
     (define/public (get-hp) hp)
     (define/public (alive?) (not (= hp 0)))
     (define/public (get-side) side)
     (define/public (get-speed) speed)
+    (define/public (get-power) power)
   
     ;---------------actions----------------------
+    (define/public (power-up!) (set! power (+ 1 power)))
+    (define/public (power-down!) (set! power 0))
     (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (display "Error already dead!")))
     (define/public (throw) (new snowball% 
                                 [sprite (make-object bitmap% "snowball.png" 'png/alpha #f)]
