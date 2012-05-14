@@ -86,7 +86,6 @@
       (set! mouse-x x)
       (set! mouse-y y))
     
-   
        
     (define/public (pause-update)
       (set! *should-run* #f))
