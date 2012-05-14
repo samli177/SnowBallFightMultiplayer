@@ -31,9 +31,21 @@
 (define powerbar%
   (class on-screen%
     (inherit set-sprite!)
+    (super-new)
+    (init-field (power 0))
     
     ;--------------set-methods----------------
-    (define/public (set-power! new-power) (set! state new-power))))
+    (define/public (set-power! new-power) (begin (set! power new-power) 
+                                                 (case type
+                                                   ((eq? power 0) (set-sprite! "kraft0.png"))
+                                                   ((eq? power 1) (set-sprite! "kraft1.png"))
+                                                   ((eq? power 2) (set-sprite! "kraft2.png"))
+                                                   ((eq? power 3) (set-sprite! "kraft3.png"))
+                                                   ((eq? power 4) (set-sprite! "kraft4.png"))
+                                                   ((eq? power 5) (set-sprite! "kraft5.png")))))
+                                                   
+    ;--------------get-methods----------------
+    (define/public (get-power) power)))
  
     
 
@@ -43,7 +55,7 @@
     (inherit get-x get-y get-radius)
     (super-new)
     (init-field (hp 2)   ; hitpoints
-                (side 1) ; possitive if player is on the left
+                (side 1) ; positive if player is on the left
                 (speed 30)
                 (power 0)
                 (powerbar #f))
@@ -70,8 +82,7 @@
                                 [x (* (get-side) (+ (get-radius) (get-x) 2))]
                                 [y (get-y)]
                                 [speed (* side 10)]))
-    ;(define/public ())
-    ))
+    (define/public (update-powerbar!) (if (not (eq? power (send powerbar get-power))) (send powerbar set-power! power))))) 
   
 
 
@@ -139,8 +150,11 @@
        [sprite (make-object bitmap% "bunker.png" 'png/alpha #f)]
        [x 300]
        [y 300]))
-
 (send *bunker* set-radius! (round (/ (send (send *bunker* get-sprite) get-width) 2)))
+
+(define *powerbar*
+  (new powerbar% [sprite (make-object bitmap% "kraft0.png" 'png/alpha #f)]))
+
 
 (define *network* (new network-session%))
 
