@@ -166,7 +166,7 @@
 ;; The GUI and its components (buttons, menus etc)
 ;; --------------------------------------------------------------------
 
-(define *frame* (make-object frame% "Ben is awesome"))
+(define *frame* (make-object frame% "Snow Ball Figth Multiplayer"))
 
 
 (define *menu-bar* 
@@ -181,7 +181,9 @@
   ("Listen" *menu* (lambda (a b) (send *network* listen))))
 
 (instantiate menu-item%
-  ("Connect" *menu* (lambda (a b) (send *network* connect))))
+  ("Connect" *menu* (lambda (a b) (begin 
+                                    (send *network* set-host! (get-text-from-user "Connect" "Enter target IP:"))
+                                    (send *network* connect)))))
 
 (instantiate menu-item%
   ("Quit" *menu* (lambda (a b) (hide-gui *gui*))))
