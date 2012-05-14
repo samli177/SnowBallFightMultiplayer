@@ -55,6 +55,14 @@
 ;; ---------------------------------------------------------------------
 ;; Mouse function
 ;; ---------------------------------------------------------------------
+(define (power-up!)
+  (send *player* power-up!))
+
+(define power-timer (new timer%
+                         [notify-callback power-up!]
+                         [interval 1000]
+                         [just-once? #f]))
+
 (define (mouse-fn mouse-event)
       (let ((x (send mouse-event get-x))
             (y (send mouse-event get-y))
@@ -62,15 +70,21 @@
         (case type
           ((leave) null)
           ((left-down)
+             (send power-timer start 1000))
+            
+          ((left-up)
            (begin
-             (semaphore-wait sync-semaphore)
-             (set! *object-list* (cons (send *player* throw) *object-list*)))
-           (semaphore-post sync-semaphore));if this goes slow, try change to mcons instead of cons
-          ;left mouse click causes player to throw, and adds the object snowball in the *object-list*
+             (send power-timer stop)
+              (semaphore-wait sync-semaphore) ; to avoid conflict in *object-list*
+              (set! *object-list* (cons (send *player* throw) *object-list*))
+              (semaphore-post sync-semaphore)
+              (send *player* power-down!)))
+              
           ((right-down)
            (background (random 255) (random 255) (random 255)))
           ((motion)
            (send new-game update-mouse x y)))))
+
 
 ;; ---------------------------------------------------------------------
 ;; Functions to draw
