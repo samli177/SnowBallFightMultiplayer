@@ -26,6 +26,9 @@
         (loop))
       (loop))
     
+    (define (start-send)
+      (thread send-thread))
+    
     (define (send-thread)
       (define (loop)
         (if (and (not (eq? change-check *object-list*)) sync)
@@ -127,13 +130,13 @@
     
     ;---------------------actions---------------------------
     
-    (define/public (start-send)
-      (thread send-thread))
+    
     
     (define/public (listen)
       (let ((listener (tcp-listen port 1 #t)))
         (set!-values (inport outport) (tcp-accept listener))
-        (thread listen-for-data)))
+        (thread listen-for-data)
+        (start-send)))
     
     (define/public (send-string string)
       (display string outport)
@@ -145,5 +148,6 @@
     
     (define/public (connect) 
       (set!-values (inport outport) (tcp-connect host port))
-      (thread listen-for-data))))
+      (thread listen-for-data)
+      (start-send))))
     

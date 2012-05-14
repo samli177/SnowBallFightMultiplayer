@@ -178,6 +178,12 @@
     ("Menu" *menu-bar*)))
 
 (instantiate menu-item%
+  ("Listen" *menu* (lambda (a b) (send *network* listen))))
+
+(instantiate menu-item%
+  ("Connect" *menu* (lambda (a b) (send *network* connect))))
+
+(instantiate menu-item%
   ("Quit" *menu* (lambda (a b) (hide-gui *gui*))))
 
 (define *canvas*
