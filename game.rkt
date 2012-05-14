@@ -47,7 +47,8 @@
       (semaphore-post sync-semaphore))
    
     (define (update-player) ;; update player is in a need of comments =)
-      (let* ((dir-v (directional-vector (send *player* get-x) (send *player* get-y) mouse-x mouse-y))
+      (begin (send *player* update-powerbar!)
+             (let* ((dir-v (directional-vector (send *player* get-x) (send *player* get-y) mouse-x mouse-y))
             (dir-x (car dir-v))
             (dir-y (cdr dir-v)))
         
@@ -57,7 +58,7 @@
         
         (if (>= (abs (- (send *player* get-y) mouse-y)) (send *player* get-speed)) 
             (send *player* set-y! (+ (send *player* get-y) (round (* (send *player* get-speed) dir-y))))
-            (send *player* set-y! (+ (send *player* get-y)(round dir-y))))))
+            (send *player* set-y! (+ (send *player* get-y)(round dir-y)))))))
     
     (define (directional-vector x1 y1 x2 y2)
       (let* ((x (- x2 x1))

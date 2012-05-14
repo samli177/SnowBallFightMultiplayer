@@ -34,15 +34,25 @@
     (super-new)
     (init-field (power 0))
     
+    ;--------------objects-images-------------
+    
+    (define kraft0 (make-object bitmap% "kraft0.png" 'png/alpha #f))
+    (define kraft1 (make-object bitmap% "kraft1.png" 'png/alpha #f))
+    (define kraft2 (make-object bitmap% "kraft2.png" 'png/alpha #f))
+    (define kraft3 (make-object bitmap% "kraft3.png" 'png/alpha #f))
+    (define kraft4 (make-object bitmap% "kraft4.png" 'png/alpha #f))
+    (define kraft5 (make-object bitmap% "kraft5.png" 'png/alpha #f))
+    
+    
     ;--------------set-methods----------------
     (define/public (set-power! new-power) (begin (set! power new-power) 
-                                                 (case type
-                                                   ((eq? power 0) (set-sprite! "kraft0.png"))
-                                                   ((eq? power 1) (set-sprite! "kraft1.png"))
-                                                   ((eq? power 2) (set-sprite! "kraft2.png"))
-                                                   ((eq? power 3) (set-sprite! "kraft3.png"))
-                                                   ((eq? power 4) (set-sprite! "kraft4.png"))
-                                                   ((eq? power 5) (set-sprite! "kraft5.png")))))
+                                                 (case power
+                                                   ((= power 0) (set-sprite! kraft0))
+                                                   ((= power 5) (set-sprite! kraft1))
+                                                   ((= power 10) (set-sprite! kraft2))
+                                                   ((= power 15) (set-sprite! kraft3))
+                                                   ((= power 20) (set-sprite! kraft4))
+                                                   ((>= power 25) (set-sprite! kraft5)))))
                                                    
     ;--------------get-methods----------------
     (define/public (get-power) power)))
@@ -72,6 +82,7 @@
     (define/public (get-side) side)
     (define/public (get-speed) speed)
     (define/public (get-power) power)
+    (define/public (get-powerbar) powerbar)
   
     ;---------------actions----------------------
     (define/public (power-up!) (set! power (+ 1 power)))
@@ -79,10 +90,12 @@
     (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (display "Error already dead!")))
     (define/public (throw) (new snowball% 
                                 [sprite (make-object bitmap% "snowball.png" 'png/alpha #f)]
-                                [x (* (get-side) (+ (get-radius) (get-x) 2))]
+                                [x (* (get-side) (+ (* side (get-radius)) (get-x) 2))]
                                 [y (get-y)]
                                 [speed (* side power)]))
-    (define/public (update-powerbar!) (if (not (eq? power (send powerbar get-power))) (send powerbar set-power! power))))) 
+    (define/public (update-powerbar!) (begin (if (not (eq? power (send powerbar get-power))) (send powerbar set-power! power))
+                                             (send powerbar set-x! (get-x))
+                                             (send powerbar set-y! (- (get-y) (get-radius)))))))
 
                                 
     
@@ -146,8 +159,12 @@
 
 ;----------instances-------------
 
+
 (define *player*
-  (new player% [sprite (make-object bitmap% "blagubbe.png" 'png/alpha #f)]))
+  (new player% 
+       [sprite (make-object bitmap% "blagubbe.png" 'png/alpha #f)]
+       [powerbar (new powerbar% [sprite (make-object bitmap% "kraft0.png" 'png/alpha #f)])]))
+
 (send *player* set-radius! (round (/ (send (send *player* get-sprite) get-width) 2)))
 
 (define *bunker*
@@ -157,8 +174,7 @@
        [y 300]))
 (send *bunker* set-radius! (round (/ (send (send *bunker* get-sprite) get-width) 2)))
 
-(define *powerbar*
-  (new powerbar% [sprite (make-object bitmap% "kraft0.png" 'png/alpha #f)]))
+
 
 
 (define *network* (new network-session%))
@@ -168,7 +184,7 @@
 
 
 
-(define *object-list* (cons *player* null))
+(define *object-list* (list *player* (send *player* get-powerbar)))
 
 
 
