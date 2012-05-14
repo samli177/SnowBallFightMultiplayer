@@ -6,7 +6,7 @@
     
     (init-field (x 0) (y 0)   ;; position of object on screen 
                 (radius 0)   ;; space occupied by object on screen
-                (sprite "")) ;; path to image representing object on screen) 
+                (sprite "")) ;; path to image representing object on screen 
     
     
     ;---------------set-methods-------------------
@@ -28,16 +28,25 @@
     
     (define/public (move) #f)))
     
+(define powerbar%
+  (class on-screen%
+    (inherit set-sprite!)
     
+    ;--------------set-methods----------------
+    (define/public (set-power! new-power) (set! state new-power))))
+ 
+    
+
 
 (define player%
   (class on-screen%
     (inherit get-x get-y get-radius)
     (super-new)
-    (init-field (hp 2)  ; hitpoints
+    (init-field (hp 2)   ; hitpoints
                 (side 1) ; possitive if player is on the left
                 (speed 30)
-                (power 1))
+                (power 0)
+                (powerbar #f))
   
     ;---------------set-methods-------------------
     (define/public (set-hp! new-hp) (set! hp new-hp))
@@ -60,7 +69,9 @@
                                 [sprite (make-object bitmap% "snowball.png" 'png/alpha #f)]
                                 [x (* (get-side) (+ (get-radius) (get-x) 2))]
                                 [y (get-y)]
-                                [speed (* side 10)]))))
+                                [speed (* side 10)]))
+    ;(define/public ())
+    ))
   
 
 
@@ -120,7 +131,7 @@
 ;----------instances-------------
 
 (define *player*
-  (new player% [sprite (make-object bitmap% "testbild.png" 'png/alpha #f)]))
+  (new player% [sprite (make-object bitmap% "blagubbe.png" 'png/alpha #f)]))
 (send *player* set-radius! (round (/ (send (send *player* get-sprite) get-width) 2)))
 
 (define *bunker*
