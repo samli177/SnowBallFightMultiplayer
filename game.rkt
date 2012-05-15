@@ -66,10 +66,10 @@
           
           (define (can-go-there? x y)
             (let ((result #t)
-                  (moved-player (new player% [x (+ (send *player* get-x) x)] [y (+ (send *player* get-y) y)])))
+                  (moved-player (new player% [x (+ (send *player* get-x) x)] [y (+ (send *player* get-y) y)] [radius (send *player* get-radius)])))
                   (begin 
                     (for-each (lambda (object)
-                                (if (not (is-a? object powerbar%))
+                                (if (not (or (is-a? object powerbar%) (eq? object *player*)))
                                     (if (collision? object moved-player)
                                         (set! result #f)))) (append *object-list* (send *network* get-remote-objects)))
                     result)))
@@ -78,7 +78,7 @@
           (if (can-go-there? delta-x delta-y)
               (begin
                 (update-player-x!)
-                (update-player-y!)))))
+                (update-player-y!)) (display "can't go there" ))))
     
     (define (directional-vector x1 y1 x2 y2)
       (let* ((x (- x2 x1))
