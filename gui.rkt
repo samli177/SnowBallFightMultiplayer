@@ -56,7 +56,7 @@
 ;; Mouse function
 ;; ---------------------------------------------------------------------
 (define (power-up!)
-  (if (<= (send *player* get-power) 35) (send *player* power-up!)))
+  (if (<= (send *player* get-power) 35) (send *player* power-up!))) ; Maximum power at 35
 
 (define power-timer (new timer%
                          [notify-callback power-up!]
@@ -77,8 +77,7 @@
              (send power-timer stop)
               (semaphore-wait sync-semaphore) ; to avoid conflict in *object-list*
               (set! *object-list* (cons (send *player* throw) *object-list*))
-              (semaphore-post sync-semaphore)
-              (send *player* power-down!)))
+              (semaphore-post sync-semaphore)))
               
           ((right-down)
            (background (random 255) (random 255) (random 255)))
