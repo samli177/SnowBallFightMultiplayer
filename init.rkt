@@ -112,27 +112,27 @@
   (class on-screen%
     (super-new)
     (inherit set-x! get-x)
-    (init-field (speed 10) (distance 100) (counter 0)) ; speed is negative for snowballs thrown left
+    (init-field (speed 10) (duration 100) (counter 0)) ; speed is negative for snowballs thrown left
     
     ;---------------set-methods-----------------
-    (define/public (set-throw_param! new-speed new-distance) (begin (set! speed new-speed) 
-                                                                    (set! distance new-distance)))
+    (define/public (set-throw_param! new-speed new-duration) (begin (set! speed new-speed) 
+                                                                    (set! duration new-duration)))
     
     (define/public (set-power! power) (begin (set! speed power) 
-                                             (set! distance (abs power)))) ; likely to be modifyed
+                                             (set! duration (abs power)))) ; likely to be modifyed
     
     ;---------------get-methods------------------
     (define/public (get-speed) speed)
-    (define/public (get-distance) distance)
+    (define/public (get-duration) duration)
     
     ;---------------actions---------------------
-    (define/override (move) ; Returns #t when maximum distance is reached
+    (define/override (move) ; Returns #t when maximum duration is reached
       (begin 
         (if (and (> speed 0)(= 10 counter)) (begin (set! speed (- speed 1)) (set! counter 0)))
         (if (and (< speed 0)(= 10 counter)) (begin (set! speed (+ speed 1)) (set! counter 0)))
         (set! counter (+ counter 1))
         (set-x! (+ (get-x) speed)) 
-        (set! distance (- distance 1)) (= distance 0)))))
+        (set! duration (- duration 1)) (= duration 0)))))
 
 
 (define bunker%
