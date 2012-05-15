@@ -169,7 +169,7 @@
        [sprite (make-object bitmap% "blagubbe.png" 'png/alpha #f)]
        [powerbar (new powerbar% [sprite (make-object bitmap% "kraft0.png" 'png/alpha #f)])]))
 
-(send *player* set-radius! (round (/ (send (send *player* get-sprite) get-width) 2)))
+(send *player* set-radius! (round (/ (send (send *player* get-sprite) get-height) 2)))
 
                
      
