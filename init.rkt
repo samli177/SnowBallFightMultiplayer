@@ -87,7 +87,7 @@
     ;---------------actions----------------------
     (define/public (power-up!) (set! power (+ 1 power)))
     (define/public (power-down!) (set! power 0))
-    (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (display "Error already dead!")))
+    (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (pause-update)))
     (define/public (throw) (let((old-power power))
                              (begin
                                (set! power 0)
@@ -148,7 +148,7 @@
     (define/public (get-hp) hp)
     (define/public (broken?) (not (= hp 0)))
     ;---------------actions----------------------
-    (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (display "Error already broken!")))))
+    (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (stop-update)))))
   
     
 ;---------testing--------------
