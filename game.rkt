@@ -103,7 +103,7 @@
             (let ((first-object (car crashlist))) 
               (for-each  
                (lambda (second-object) 
-                 (if (collision? first-object second-object) ;combined radius of two objects
+                 (if (collision? first-object second-object) ;will the two objects collide
                      (if (or (is-a? first-object snowball%) (is-a? second-object snowball%))
                          (snowballcollission first-object second-object))))
                (cdr crashlist)))             
