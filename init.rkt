@@ -171,12 +171,8 @@
 
 (send *player* set-radius! (round (/ (send (send *player* get-sprite) get-width) 2)))
 
-(define *bunker*
-  (new bunker% 
-       [sprite (make-object bitmap% "bunker.png" 'png/alpha #f)]))
-(send *bunker* set-radius! (round (/ (send (send *bunker* get-sprite) get-width) 2)))
-
-
+               
+     
 
 
 (define *network* (new network-session%))

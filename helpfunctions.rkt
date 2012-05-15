@@ -14,7 +14,16 @@
 
 
 (define (bunkeradder number) ;adds bunkers in the quantity of "number" to the battle field
-  (if (= number 0) 
-      (void)
-      (begin (set! templist (cons *bunker* (temptlist)))
-             (bunkeradder (- number 1)))))
+  (let* ((sprite (make-object bitmap% "bunker.png" 'png/alpha #f))
+         (radius (/ (send sprite get-width) 2))
+         (generated-x (+ 300 (random 600)))
+         (generated-y (+ 100 (random 300))))
+    (if (= number 0) 
+        (void)
+        (begin (set! *object-list* (cons (new bunker%   
+                                              [sprite sprite]   
+                                              [radius radius]
+                                              [x generated-x]
+                                              [y generated-y])
+                                         *object-list*))
+               (bunkeradder (- number 1))))))
