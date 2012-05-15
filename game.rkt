@@ -107,7 +107,7 @@
     
     (define/public (start-game)
       (show-gui *gui*)
-      (draw-text "welcome to snowballfight" 300 300 *black-pen* *green-brush*)
+      (draw-text "welcome to snowballfight" 500 300 *black-pen* *green-brush*)
       )))
 
 (define (snowballcollission first-object second-object)
