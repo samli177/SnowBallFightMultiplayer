@@ -11,7 +11,7 @@
     (super-new)
     (field (WIDTH 21)
            (HEIGHT 21)
-           (*should-run* #f)
+           (*update-loop* #f)
            (mouse-x 0)
            (mouse-y 0))
     
@@ -122,22 +122,20 @@
       (set! mouse-x x)
       (set! mouse-y y))
     
-       
-    (define/public (pause-update)
-      (set! *should-run* #f))
     
     (define/public (exit-game)
-      (pause-update)
       (hide-gui *gui*))
     
+    (define/public (stop-update)
+      (send *update-loop* stop))
+        
     (define/public (start-update)
-      (when (not *should-run*)
-        (set! *should-run* #t)
-        (new timer%
-             [notify-callback update]
-             [interval 20]
-             [just-once? #f])))
+      (set! *update-loop* (new timer%
+                             [notify-callback update]
+                             [interval 20]
+                             [just-once? #f])))
     
+      
     (define/public (start-game)
       (show-gui *gui*)
       (draw-text "welcome to snowballfight" 350 300 *black-pen* *green-brush*)
