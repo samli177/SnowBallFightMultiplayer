@@ -26,7 +26,7 @@
         (loop))
       (loop))
     
-    (define (start-send)
+    (define/public (start-send)
       (thread send-thread))
     
     (define (send-thread)
@@ -63,7 +63,7 @@
     (define (interpet wordlst)
       (cond 
         ((eq? (string->symbol (car wordlst)) 'hit) (hit-player!))
-        (else (update-remote-objectlist wordlst))))
+        (else (display wordlist) (update-remote-objectlist wordlst))))
     
     (define (hit-player!)
       (for-each (lambda (object) (if (is-a? object player%) (send object hit!))) *object-list*))
