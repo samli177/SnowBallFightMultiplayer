@@ -163,7 +163,7 @@
 
 (instantiate menu-item%
   ("Connect" *menu* (lambda (a b) (begin
-                                    (send *player* set-xy! 540 300) ;coordinates for spawning
+                                    (send *player* set-xy! 1140 300) ;coordinates for spawning
                                     (bunkeradder (string->number (get-text-from-user "Please enter how many bunkers you want on the battle field" "Type a number and press ok or enter")))
                                     (send *player* set-side! -1)    ;throw balls to the left
                                     (send *network* set-host! (get-text-from-user "Connect" "Enter target IP:"))
