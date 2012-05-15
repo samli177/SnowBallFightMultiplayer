@@ -56,7 +56,7 @@
 ;; Mouse function
 ;; ---------------------------------------------------------------------
 (define (power-up!)
-  (send *player* power-up!))
+  (if (<= (send *player* get-power) 35) (send *player* power-up!)))
 
 (define power-timer (new timer%
                          [notify-callback power-up!]
