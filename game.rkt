@@ -92,6 +92,7 @@
           
       (define (snowballcollission first-object second-object)
         (cond ((and (occurs? first-object *object-list*)  ;is it my snowball?
+                    (is-a? second-object player%)
                     (not (eq? second-object *player*)))   ;does my snowball hit the opponent or me? Nothing will happen if I hit myself. 
                (begin (send *network* hit!)
                       (set! *object-list* (remove first-object *object-list* eq?)))))) ;if so, remove the snowball
