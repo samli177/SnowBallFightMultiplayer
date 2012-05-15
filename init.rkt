@@ -172,7 +172,7 @@
 
 (define *player*
   (new player% 
-       [sprite (make-object bitmap% "blue_player.png" 'png/alpha #f)]
+       [sprite (make-object bitmap% "blagubbe.png" 'png/alpha #f)]
        [powerbar (new powerbar% [sprite (make-object bitmap% "kraft0.png" 'png/alpha #f)])]))
 
 (send *player* set-radius! (round (/ (send (send *player* get-sprite) get-height) 2)))
