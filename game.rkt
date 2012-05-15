@@ -47,18 +47,38 @@
       (semaphore-post sync-semaphore))
    
     (define (update-player) ;; update player is in a need of comments =)
-      (begin (send *player* update-powerbar!)
-             (let* ((dir-v (directional-vector (send *player* get-x) (send *player* get-y) mouse-x mouse-y))
-            (dir-x (car dir-v))
-            (dir-y (cdr dir-v)))
-        
-        (if (>= (abs (- (send *player* get-x) mouse-x)) (send *player* get-speed)) 
-            (send *player* set-x! (+ (send *player* get-x) (round (* (send *player* get-speed) dir-x))))
-            (send *player* set-x! mouse-x))
-        
-        (if (>= (abs (- (send *player* get-y) mouse-y)) (send *player* get-speed)) 
-            (send *player* set-y! (+ (send *player* get-y) (round (* (send *player* get-speed) dir-y))))
-            (send *player* set-y! mouse-y)))))
+      
+      (let* ((dir-v (directional-vector (send *player* get-x) (send *player* get-y) mouse-x mouse-y))
+             (dir-x (car dir-v))
+             (dir-y (cdr dir-v))
+             (delta-x (round (* (send *player* get-speed) dir-x)))
+             (delta-y (round (* (send *player* get-speed) dir-y))))
+
+        (define (update-player-x!)
+          (if (>= (abs (- (send *player* get-x) mouse-x)) (send *player* get-speed)) 
+              (send *player* set-x! (+ (send *player* get-x) delta-x))
+              (send *player* set-x! mouse-x))) ; To avoid oscillation around mouse possition
+          
+          (define (update-player-y!)
+            (if (>= (abs (- (send *player* get-y) mouse-y)) (send *player* get-speed)) 
+                (send *player* set-y! (+ (send *player* get-y) delta-y))
+                (send *player* set-y! mouse-y)))
+          
+          (define (can-go-there? x y)
+            (let ((resault #t)
+                  (moved-player (new player% [x (+ (send *player* get-x) x)] [y (+ (send *player* get-y) y)])))
+                  (begin 
+                    (for-each (lambda (object)
+                                (if (not (is-a? object powerbar%))
+                                    (if (collision? object moved-player)
+                                        (set! resault #f)))) (append *object-list* (send *network* get-remote-objects)))
+                    resault)))
+
+          (send *player* update-powerbar!)
+          (if (can-go-there? delta-x delta-y)
+              (begin
+                (update-player-x!)
+                (update-player-y!)))))
     
     (define (directional-vector x1 y1 x2 y2)
       (let* ((x (- x2 x1))
@@ -72,7 +92,7 @@
             (let ((first-object (car crashlist))) 
               (for-each  
                (lambda (second-object) 
-                 (if (>= (+ (send second-object get-radius) (send first-object get-radius))
+                 (if (>= (+ (send second-object get-radius) (send first-object get-radius)) ; Switch to help function
                          (distance first-object second-object)) ;combined radius of two objects
                      (if (or (is-a? first-object snowball%) (is-a? second-object snowball%))
                          (snowballcollission first-object second-object))))
@@ -82,7 +102,7 @@
                (cdr crashlist)))             
             (collisionhandler (cdr crashlist)))))
     
-        
+    
     (define/public (update-mouse x y)
       (set! mouse-x x)
       (set! mouse-y y))
