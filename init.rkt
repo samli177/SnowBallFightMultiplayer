@@ -173,9 +173,7 @@
 
 (define *bunker*
   (new bunker% 
-       [sprite (make-object bitmap% "bunker.png" 'png/alpha #f)]
-       [x 300]
-       [y 300]))
+       [sprite (make-object bitmap% "bunker.png" 'png/alpha #f)]))
 (send *bunker* set-radius! (round (/ (send (send *bunker* get-sprite) get-width) 2)))
 
 
