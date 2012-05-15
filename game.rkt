@@ -54,11 +54,11 @@
         
         (if (>= (abs (- (send *player* get-x) mouse-x)) (send *player* get-speed)) 
             (send *player* set-x! (+ (send *player* get-x) (round (* (send *player* get-speed) dir-x))))
-            (send *player* set-x! (+ (send *player* get-x) (round dir-x))))
+            (send *player* set-x! mouse-x))
         
         (if (>= (abs (- (send *player* get-y) mouse-y)) (send *player* get-speed)) 
             (send *player* set-y! (+ (send *player* get-y) (round (* (send *player* get-speed) dir-y))))
-            (send *player* set-y! (+ (send *player* get-y)(round dir-y)))))))
+            (send *player* set-y! mouse-y)))))
     
     (define (directional-vector x1 y1 x2 y2)
       (let* ((x (- x2 x1))
