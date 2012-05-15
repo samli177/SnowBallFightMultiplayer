@@ -65,14 +65,14 @@
                 (send *player* set-y! mouse-y)))
           
           (define (can-go-there? x y)
-            (let ((resault #t)
+            (let ((result #t)
                   (moved-player (new player% [x (+ (send *player* get-x) x)] [y (+ (send *player* get-y) y)])))
                   (begin 
                     (for-each (lambda (object)
                                 (if (not (is-a? object powerbar%))
                                     (if (collision? object moved-player)
-                                        (set! resault #f)))) (append *object-list* (send *network* get-remote-objects)))
-                    resault)))
+                                        (set! result #f)))) (append *object-list* (send *network* get-remote-objects)))
+                    result)))
 
           (send *player* update-powerbar!)
           (if (can-go-there? delta-x delta-y)
