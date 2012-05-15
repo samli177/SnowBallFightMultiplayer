@@ -97,16 +97,14 @@
                       (set! *object-list* (remove first-object *object-list* eq?)))))) ;if so, remove the snowball
       
       (if (not (null? crashlist))
-          (begin 
-            (let ((first-object (car crashlist))) 
-              (for-each  
-               (lambda (second-object) 
-                 (if (collision? first-object second-object) ;will the two objects collide
-                     (if (and (is-a? first-object snowball%)        
-                              (is-a? second-object player%))
-                              (snowballcollission first-object second-object)))
-                 (cdr crashlist)))             
-              (collisionhandler (cdr crashlist))))))
+          (let ((first-object (car crashlist))) 
+            (for-each  
+             (lambda (second-object) 
+               (if (collision? first-object second-object) ;will the two objects collide
+                   (if (is-a? first-object snowball%)
+                       (snowballcollission first-object second-object))))
+             (cdr crashlist)))             
+          (collisionhandler (cdr crashlist))))
     
       
     
