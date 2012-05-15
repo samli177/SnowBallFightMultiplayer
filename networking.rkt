@@ -129,7 +129,7 @@
     
     (put 'remote-commands 'make-snowball remote-make-snowball)
     (put 'remote-commands 'make-player remote-make-player)
-    (put 'remote-commands 'make-player remote-make-player)
+    (put 'remote-commands 'make-player remote-make-bunker)
     
     ;---------------------interface--------------------------
     
