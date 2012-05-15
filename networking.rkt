@@ -46,7 +46,7 @@
       (let ((str ""))
         (define (msg-loop iter-lst)
           (cond
-            ((null? iter-lst) (substring str 1) (display "vad"))
+            ((null? iter-lst) (substring str 1))
             ((is-a? (car iter-lst) snowball%)
              (set! str (string-append str " make-snowball "  
                                       (number->string (send (car iter-lst) get-x)) " "
