@@ -121,7 +121,7 @@
            [y (string->number (cadr args))]))
     
     (define (remote-make-bunker . args)
-      (new player% 
+      (new bunker% 
            [sprite (make-object bitmap% "bunker.png" 'png/alpha #f)]
            [radius (/ (send (make-object bitmap% "bunker.png" 'png/alpha #f) get-width) 2)]
            [x (string->number (car args))]
