@@ -86,7 +86,18 @@
              (length (sqrt (+ (sqr x) (sqr y)))))
         (if (= length 0) (cons 0 0) (cons (/ x length) (/ y length)))))
       
-    (define/public (collisionhandler crashlist) 
+    
+    
+    (define/public (collisionhandler crashlist)
+      
+      (define (snowballcollission first-object second-object)
+        (cond ((and (is-a? first-object snowball%)        
+                    (is-a? second-object player%) 
+                    (occurs? first-object *object-list*)  ;is it my snowball?
+                    (not (eq? second-object *player*)))   ;does my snowball hit the opponent or me? Nothing will happen if I hit myself. 
+               (begin (send *network* hit!)
+                      (set! *object-list* (remove first-object *object-list* eq?)))))) ;if so, remove the snowball
+      
       (if (not (null? crashlist))
           (begin 
             (let ((first-object (car crashlist))) 
@@ -95,9 +106,6 @@
                  (if (collision? first-object second-object) ;combined radius of two objects
                      (if (or (is-a? first-object snowball%) (is-a? second-object snowball%))
                          (snowballcollission first-object second-object))))
-                              ;(occurs? second-object (send *network* get-remote-objects)
-                               ;;only need to check if second-object is a player since the other computers player always will be last in the "remote object list"
-                         ;(begin (set! templist (remove object templist eq?)) (display "den andra datorns spelare är träffad")))))
                (cdr crashlist)))             
             (collisionhandler (cdr crashlist)))))
     
@@ -120,22 +128,14 @@
         (new timer%
              [notify-callback update]
              [interval 20]
-             [just-once? #f])
-        ;(show-gui *gui*)
-        ))
+             [just-once? #f])))
     
     (define/public (start-game)
       (show-gui *gui*)
-      (draw-text "welcome to snowballfight" 500 300 *black-pen* *green-brush*)
-      )))
+      (draw-text "welcome to snowballfight" 350 300 *black-pen* *green-brush*)
+      (draw-text "After you have either connected or started listening, press pray game!" 200 350 *black-pen* *green-brush*))))
 
-(define (snowballcollission first-object second-object)
-  (cond ((and (is-a? first-object snowball%)        
-              (is-a? second-object player%) 
-              (occurs? first-object *object-list*)  ;is it my snowball?
-              (not (eq? second-object *player*)))   ;does my snowball hit the opponent or me? Nothing will happen if I hit myself. 
-         (begin (send *network* hit!)
-                (set! *object-list* (remove first-object *object-list* eq?)))))) ;if so, remove the snowball
+
 
 
 (define new-game (new Game%))
