@@ -68,7 +68,8 @@
                 (side 1) ; positive if player is on the left
                 (speed 30)
                 (power 0)
-                (powerbar #f))
+                (powerbar #f)
+                (youlosepic (make-object bitmap% "youlosepic.png" 'png/alpha #f)))
   
     ;---------------set-methods-------------------
     (define/public (set-hp! new-hp) (set! hp new-hp))
@@ -87,7 +88,10 @@
     ;---------------actions----------------------
     (define/public (power-up!) (set! power (+ 1 power)))
     (define/public (power-down!) (set! power 0))
-    (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (pause-update)))
+    (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (begin (pause-update) (set! *object-list* (cons (new on-screen% 
+                                                                                                               [sprite youlosepic]
+                                                                                                               [x 400]
+                                                                                                               [y 300]) *object-list*)))))
     (define/public (throw) (let((old-power power))
                              (begin
                                (set! power 0)
@@ -171,7 +175,7 @@
 
 (send *player* set-radius! (round (/ (send (send *player* get-sprite) get-height) 2)))
 
-               
+                
      
 
 
