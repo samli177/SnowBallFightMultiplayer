@@ -93,7 +93,7 @@
                                                                                                  [x 400]
                                                                                                  [y 300]) *object-list*))
                                                                   (sleep 0.1)
-                                                                  (send new-game pause-update))))
+                                                                  (send new-game stop-update))))
     (define/public (throw) (let((old-power power))
                              (begin
                                (set! power 0)
