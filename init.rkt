@@ -88,10 +88,13 @@
     ;---------------actions----------------------
     (define/public (power-up!) (set! power (+ 1 power)))
     (define/public (power-down!) (set! power 0))
-    (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (begin  (set! *object-list* (cons (new on-screen% 
+    (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (begin
+                                                            (semaphore-wait sync-semaphore)
+                                                            (set! *object-list* (cons (new on-screen% 
                                                                                                  [sprite youlosepic]
                                                                                                  [x 400]
                                                                                                  [y 300]) *object-list*))
+                                                            (semaphore-post sync-semaphore)
                                                                   (sleep 0.1)
                                                                   (send new-game stop-update))))
     (define/public (throw) (let((old-power power))

@@ -99,9 +99,17 @@
                 ((and (is-a? other-object player%)            ;does my snowball hit a player?
                       (not (eq? other-object *player*)))      ;does my snowball hit the opponent or me? Nothing will happen if I hit myself.
                  (begin (send *network* hit!)
-                      (set! *object-list* (remove snowball *object-list* eq?)))) ;if so, remove the snowball
-                ((is-a? other-object bunker%) (set! *object-list* (remove snowball *object-list* eq?))) ;if you hit a bunker, remove the snowball
-                ((is-a? other-object snowball%) (set! *object-list* (remove snowball *object-list* eq?))))))) ;if you hit another snowball, remove the snowball
+                        (semaphore-wait sync-semaphore)
+                        (set! *object-list* (remove snowball *object-list* eq?))
+                        (semaphore-post sync-semaphore))) ;if so, remove the snowball
+                ((is-a? other-object bunker%) (begin
+                                                (semaphore-wait sync-semaphore)
+                                                (set! *object-list* (remove snowball *object-list* eq?))
+                                                (semaphore-post sync-semaphore))) ;if you hit a bunker, remove the snowball
+                ((is-a? other-object snowball%) (begin
+                                                (semaphore-wait sync-semaphore)
+                                                (set! *object-list* (remove snowball *object-list* eq?))
+                                                (semaphore-post sync-semaphore))))))) ;if you hit another snowball, remove the snowball
           
         
               (if (not (null? crashlist))
