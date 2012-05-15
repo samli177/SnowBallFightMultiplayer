@@ -90,7 +90,7 @@
     (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (display "Error already dead!")))
     (define/public (throw) (new snowball% 
                                 [sprite (make-object bitmap% "snowballe.png" 'png/alpha #f)]
-                                [x (* (get-side) (+ (* side (get-radius)) (get-x) 2))]
+                                [x (+ (* side (+ (get-radius) 2)) (get-x))]
                                 [y (get-y)]
                                 [speed (* side power)]))
     (define/public (update-powerbar!) (begin (if (not (eq? power (send powerbar get-power))) (send powerbar set-power! power))
