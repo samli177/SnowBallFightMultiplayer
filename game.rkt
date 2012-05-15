@@ -92,8 +92,7 @@
             (let ((first-object (car crashlist))) 
               (for-each  
                (lambda (second-object) 
-                 (if (>= (+ (send second-object get-radius) (send first-object get-radius)) ; Switch to help function
-                         (distance first-object second-object)) ;combined radius of two objects
+                 (if (collision? first-object second-object) ;combined radius of two objects
                      (if (or (is-a? first-object snowball%) (is-a? second-object snowball%))
                          (snowballcollission first-object second-object))))
                               ;(occurs? second-object (send *network* get-remote-objects)
