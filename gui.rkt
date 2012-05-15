@@ -166,6 +166,9 @@
                                     (send *network* connect)))))
 
 (instantiate menu-item%
+  ("Pray Game" *menu* (lambda (a b) (send new-game start-update))))
+
+(instantiate menu-item%
   ("Quit" *menu* (lambda (a b) (hide-gui *gui*))))
 
 (define *canvas*

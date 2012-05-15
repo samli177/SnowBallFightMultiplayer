@@ -102,10 +102,13 @@
              [notify-callback update]
              [interval 20]
              [just-once? #f])
-        (show-gui *gui*)))
+        ;(show-gui *gui*)
+        ))
     
     (define/public (start-game)
-      (start-update))))
+      (show-gui *gui*)
+      (draw-text "welcome to snowballfight" 300 300 *black-pen* *green-brush*)
+      )))
 
 (define (snowballcollission first-object second-object)
   (if (and (is-a? first-object snowball%) (is-a? second-object player%) (occurs? first-object *object-list*) (not (eq? second-object *player*))) ;does my snowball hit the opponent?
