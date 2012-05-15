@@ -88,10 +88,12 @@
     ;---------------actions----------------------
     (define/public (power-up!) (set! power (+ 1 power)))
     (define/public (power-down!) (set! power 0))
-    (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (begin (pause-update) (set! *object-list* (cons (new on-screen% 
-                                                                                                               [sprite youlosepic]
-                                                                                                               [x 400]
-                                                                                                               [y 300]) *object-list*)))))
+    (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (begin  (set! *object-list* (cons (new on-screen% 
+                                                                                                 [sprite youlosepic]
+                                                                                                 [x 400]
+                                                                                                 [y 300]) *object-list*))
+                                                                  (sleep 0.1)
+                                                                  (send new-game pause-update))))
     (define/public (throw) (let((old-power power))
                              (begin
                                (set! power 0)
