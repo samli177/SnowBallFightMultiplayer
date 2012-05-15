@@ -42,7 +42,7 @@
     
     ;----------------interpeting and construction of messages--------------------
     
-    (define (make-message lst)
+    (define/public (make-message lst) ; Constructs a message string from list of objects
       (let ((str ""))
         (define (msg-loop iter-lst)
           (cond
@@ -58,7 +58,8 @@
                                       (number->string (send (car iter-lst) get-x)) " "
                                       (number->string (send (car iter-lst) get-y))))
              (msg-loop (cdr iter-lst)))))
-        (msg-loop lst)))
+        (msg-loop lst)
+        str))
     
     (define (interpet wordlst)
       (cond 
@@ -135,7 +136,8 @@
     (define/public (listen)
       (let ((listener (tcp-listen port 1 #t)))
         (set!-values (inport outport) (tcp-accept listener))
-        (thread listen-for-data)))
+        (thread listen-for-data)
+        (start-send)))
     
     (define/public (send-string string)
       (display string outport)
@@ -147,5 +149,6 @@
     
     (define/public (connect) 
       (set!-values (inport outport) (tcp-connect host port))
-      (thread listen-for-data))))
+      (thread listen-for-data)
+      (start-send))))
     
