@@ -94,30 +94,9 @@
 (define (clear)
   (send *dc* clear))
 
-; A procedure that sets the background color of the GUI
-(define (background)
-  (send *dc* set-background  (make-object color% (random 255) (random 255) (random 255))))
-
 (define (background r g b)
   (send *dc* set-background  (make-object color% r g b)))
 
-;; A procedures that draws an ellipse
-(define (draw-circle x y size-x size-y pen brush)
-  (send (get-dc *gui*) set-pen pen)
-  (send (get-dc *gui*) set-brush brush)
-  (send (get-dc *gui*) draw-ellipse x y size-x size-y))
-
-;; A procedures that draws a rectangle
-(define (draw-rectangle x y size-x size-y pen brush)
-  (send (get-dc *gui*) set-pen pen)
-  (send (get-dc *gui*) set-brush brush)
-  (send (get-dc *gui*) draw-rectangle x y size-x size-y))
-
-;; A procedures that draws a line
-(define (draw-line x y size-x size-y pen brush)
-  (send (get-dc *gui*) set-pen pen)
-  (send (get-dc *gui*) set-brush brush)
-  (send (get-dc *gui*) draw-line x y (+ x size-x) (+ y size-y)))
 
 ;; A procedures that draws text
 (define (draw-text text x y pen brush)
@@ -166,7 +145,7 @@
 ;; The GUI and its components (buttons, menus etc)
 ;; --------------------------------------------------------------------
 
-(define *frame* (make-object frame% "Snow Ball Figth Multiplayer"))
+(define *frame* (make-object frame% "Samuels och Bens datorspel"))
 
 
 (define *menu-bar* 
