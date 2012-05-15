@@ -91,23 +91,29 @@
     (define/public (collisionhandler crashlist)
       
       (define (snowballcollission first-object second-object)
-        (display first-object) (display second-object) 
-        (cond ((and (occurs? first-object *object-list*)  ;is it my snowball?
-                    (is-a? second-object player%)         ;does my snowball hit a player?
-                    (not (eq? second-object *player*)))   ;does my snowball hit the opponent or me? Nothing will happen if I hit myself. 
-               (begin (send *network* hit!)
-                      (set! *object-list* (remove first-object *object-list* eq?)))))) ;if so, remove the snowball
-      
-      (if (not (null? crashlist))
-          (let ((first-object (car crashlist))) 
-            (for-each  
-             (lambda (second-object) 
-               (if (collision? first-object second-object) ;will the two objects collide
-                   (if (is-a? first-object snowball%)
-                       (snowballcollission first-object second-object))))
-             (cdr crashlist)))             
-          (collisionhandler (cdr crashlist))))
-    
+        (let*
+            ((snowball (if (is-a? first-object snowball%) first-object second-object))
+             (other-object (if (eq? snowball first-object) second-object first-object)))
+          (if (occurs? snowball *object-list*)                ;is the snowball my snowball?
+              (cond
+                ((and (is-a? other-object player%)            ;does my snowball hit a player?
+                      (not (eq? other-object *player*)))      ;does my snowball hit the opponent or me? Nothing will happen if I hit myself.
+                 (begin (send *network* hit!)
+                      (set! *object-list* (remove snowball *object-list* eq?)))) ;if so, remove the snowball
+                ((is-a? other-object bunker%) (set! *object-list* (remove snowball *object-list* eq?))) ;if you hit a bunker, remove the snowball
+                ((is-a? other-object snowball%) (set! *object-list* (remove snowball *object-list* eq?))))))) ;if you hit another snowball, remove the snowball
+          
+        
+              (if (not (null? crashlist))
+                  (let ((first-object (car crashlist))) 
+                    (for-each  
+                     (lambda (second-object) 
+                       (if (collision? first-object second-object) ;will the two objects collide
+                           (if (or (is-a? first-object snowball%) (is-a? second-object snowball%))
+                               (snowballcollission first-object second-object))))
+                     (cdr crashlist)))             
+                  (collisionhandler (cdr crashlist))))
+        
       
     
       
