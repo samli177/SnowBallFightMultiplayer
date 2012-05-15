@@ -89,11 +89,9 @@
     
     
     (define/public (collisionhandler crashlist)
-      
+          
       (define (snowballcollission first-object second-object)
-        (cond ((and (is-a? first-object snowball%)        
-                    (is-a? second-object player%) 
-                    (occurs? first-object *object-list*)  ;is it my snowball?
+        (cond ((and (occurs? first-object *object-list*)  ;is it my snowball?
                     (not (eq? second-object *player*)))   ;does my snowball hit the opponent or me? Nothing will happen if I hit myself. 
                (begin (send *network* hit!)
                       (set! *object-list* (remove first-object *object-list* eq?)))))) ;if so, remove the snowball
@@ -104,12 +102,16 @@
               (for-each  
                (lambda (second-object) 
                  (if (collision? first-object second-object) ;will the two objects collide
-                     (if (or (is-a? first-object snowball%) (is-a? second-object snowball%))
-                         (snowballcollission first-object second-object))))
-               (cdr crashlist)))             
-            (collisionhandler (cdr crashlist)))))
+                     (if (and (is-a? first-object snowball%)        
+                              (is-a? second-object player%))
+                              (snowballcollission first-object second-object)))
+                 (cdr crashlist)))             
+              (collisionhandler (cdr crashlist))))))
     
+      
     
+      
+      
     (define/public (update-mouse x y)
       (set! mouse-x x)
       (set! mouse-y y))
