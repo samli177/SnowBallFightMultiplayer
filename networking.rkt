@@ -64,7 +64,7 @@
     (define (interpet wordlst)
       (cond 
         ((eq? (string->symbol (car wordlst)) 'hit) (hit-player!))
-        (else (display wordlst) (update-remote-objectlist wordlst))))
+        (else (update-remote-objectlist wordlst))))
     
     (define (hit-player!)
       (for-each (lambda (object) (if (is-a? object player%) (send object hit!))) *object-list*))
