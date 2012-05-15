@@ -58,6 +58,12 @@
                                       (number->string (send (car iter-lst) get-x)) " "
                                       (number->string (send (car iter-lst) get-y))))
              (msg-loop (cdr iter-lst)))
+            ((is-a? (car iter-lst) bunker%)
+             (set! str (string-append str 
+                                      " make-bunker " 
+                                      (number->string (send (car iter-lst) get-x)) " "
+                                      (number->string (send (car iter-lst) get-y))))
+             (msg-loop (cdr iter-lst)))
             (else (msg-loop (cdr iter-lst)))))
         (msg-loop lst)))
     
@@ -109,12 +115,20 @@
     
     (define (remote-make-player . args)
       (new player% 
-           [sprite (make-object bitmap% "testbild.png" 'png/alpha #f)]
-           [radius (/ (send (make-object bitmap% "testbild.png" 'png/alpha #f) get-width) 2)]
+           [sprite (make-object bitmap% "blagubbe.png" 'png/alpha #f)]
+           [radius (/ (send (make-object bitmap% "blagubbe.png" 'png/alpha #f) get-width) 2)]
+           [x (string->number (car args))]
+           [y (string->number (cadr args))]))
+    
+    (define (remote-make-bunker . args)
+      (new player% 
+           [sprite (make-object bitmap% "bunker.png" 'png/alpha #f)]
+           [radius (/ (send (make-object bitmap% "bunker.png" 'png/alpha #f) get-width) 2)]
            [x (string->number (car args))]
            [y (string->number (cadr args))]))
     
     (put 'remote-commands 'make-snowball remote-make-snowball)
+    (put 'remote-commands 'make-player remote-make-player)
     (put 'remote-commands 'make-player remote-make-player)
     
     ;---------------------interface--------------------------
