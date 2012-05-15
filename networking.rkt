@@ -136,6 +136,7 @@
       (let ((listener (tcp-listen port 1 #t)))
         (set!-values (inport outport) (tcp-accept listener))
         (thread listen-for-data)
+        (sleep .5)
         (start-send)))
     
     (define/public (send-string string)
@@ -149,5 +150,6 @@
     (define/public (connect) 
       (set!-values (inport outport) (tcp-connect host port))
       (thread listen-for-data)
+      (sleep 0.1)
       (start-send))))
     
