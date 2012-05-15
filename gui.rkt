@@ -56,7 +56,7 @@
 ;; Mouse function
 ;; ---------------------------------------------------------------------
 (define (power-up!)
-  (if (<= (send *player* get-power) 35) (send *player* power-up!))) ; Maximum power at 35
+  (send *player* power-up!))
 
 (define power-timer (new timer%
                          [notify-callback power-up!]
@@ -77,7 +77,8 @@
              (send power-timer stop)
               (semaphore-wait sync-semaphore) ; to avoid conflict in *object-list*
               (set! *object-list* (cons (send *player* throw) *object-list*))
-              (semaphore-post sync-semaphore)))
+              (semaphore-post sync-semaphore)
+              (send *player* power-down!)))
               
           ((right-down)
            (background (random 255) (random 255) (random 255)))
@@ -160,6 +161,7 @@
 
 (instantiate menu-item%
   ("Connect" *menu* (lambda (a b) (begin 
+                                    (bunkeradder (string->number (get-text-from-user "Please enter how many bunkers you want on the battle field" "Type a number and press ok or enter")))
                                     (send *player* set-side! -1)
                                     (send *network* set-host! (get-text-from-user "Connect" "Enter target IP:"))
                                     (send *network* connect)))))

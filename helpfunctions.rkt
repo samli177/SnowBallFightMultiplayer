@@ -16,5 +16,5 @@
 (define (bunkeradder number) ;adds bunkers in the quantity of "number" to the battle field
   (if (= number 0) 
       (void)
-      (begin (set! templist (cons *bunker* (temptlist)))
+      (begin (set! *object-list* (cons *bunker* *object-list*))
              (bunkeradder (- number 1)))))
