@@ -78,7 +78,7 @@
           (if (can-go-there? delta-x delta-y)
               (begin
                 (update-player-x!)
-                (update-player-y!)) (display "can't go there" ))))
+                (update-player-y!)))))
     
     (define (directional-vector x1 y1 x2 y2)
       (let* ((x (- x2 x1))
