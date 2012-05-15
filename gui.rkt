@@ -175,12 +175,12 @@
     (parent *frame*)
     (paint-callback draw-canvas)
     (mouse-callback mouse-fn)
-    (min-width 700)
-    (min-height 500)
+    (min-width 1200)
+    (min-height 600)
     (stretchable-width #f) 
     (stretchable-height #f)))
 
-(define *buffer* (make-object bitmap% 700 500 #f))
+(define *buffer* (make-object bitmap% 1200 600 #f))
 (define *dc* (make-object bitmap-dc% *buffer*))
 
 (define *gui* 
