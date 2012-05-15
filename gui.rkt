@@ -182,6 +182,7 @@
 
 (instantiate menu-item%
   ("Connect" *menu* (lambda (a b) (begin 
+                                    (send *player* set-side! -1)
                                     (send *network* set-host! (get-text-from-user "Connect" "Enter target IP:"))
                                     (send *network* connect)))))
 
