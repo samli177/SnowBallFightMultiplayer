@@ -140,9 +140,9 @@
     (define/public (get-remote-objects) (let ((temp-list '()))
                                           (begin
                                           (semaphore-wait rol-semaphore)
-                                          (set! templist remote-object-list)
+                                          (set! temp-list remote-object-list)
                                           (semaphore-post rol-semaphore)
-                                          templist)))
+                                          temp-list)))
     
     ;---------------------set-methods------------------------
     
