@@ -19,9 +19,10 @@
     
     (define (listen-for-data)
       (define (loop)
-        (display " LSD ")
+        
         (set! remote-word-list (string->wordlist (read-line inport 'any)))
-        (if (eof-object? remote-word-list) (display "Error: eof-object"))
+        (display " Recieved ")
+        (if (eof-object? remote-word-list) (display "Error: eof-object")) ; If message is 'sync, set sync #t 
         (if (eq? (string->symbol (car remote-word-list)) 'sync) (begin (semaphore-wait rol-semaphore) (set! sync #t) (semaphore-post rol-semaphore))
             (begin (interpet remote-word-list) (send-string "sync")))
         (loop))
@@ -29,16 +30,19 @@
     
     (define/public (start-send)
       (thread send-thread))
-    
+
     (define (send-thread)
+      (let ((tempsync #f))
       (define (loop)
-        (display " S-T ")
-        (if (and (not (eq? change-check *object-list*)) sync)
-            (begin (send-string (make-message *object-list*)) (set! change-check *object-list*) (begin (semaphore-wait rol-semaphore) (set! sync #f) (semaphore-post rol-semaphore))))
+        (semaphore-wait rol-semaphore)
+        (set! tempsync sync)
+        (semaphore-post rol-semaphore)
+        (if (and (not (eq? change-check *object-list*)) tempsync)
+            (begin (display " sending ") (send-string (make-message *object-list*)) (set! change-check *object-list*) (begin (semaphore-wait rol-semaphore) (set! sync #f) (semaphore-post rol-semaphore))))
         (sleep .01)
         (loop))
       (set! change-check *object-list*)
-      (loop))
+      (loop)))
     
     
     
