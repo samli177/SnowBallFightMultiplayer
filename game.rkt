@@ -64,26 +64,27 @@
              (dir-y (cdr dir-v))
              (delta-x (round (* (send *player* get-speed) dir-x)))
              (delta-y (round (* (send *player* get-speed) dir-y))))
-
+        
         (define (update-player-x!)
           (if (>= (abs (- (send *player* get-x) mouse-x)) (send *player* get-speed)) 
               (send *player* set-x! (+ (send *player* get-x) delta-x))
               (send *player* set-x! mouse-x))) ; To avoid oscillation around mouse possition
-          
-          (define (update-player-y!)
-            (if (>= (abs (- (send *player* get-y) mouse-y)) (send *player* get-speed)) 
-                (send *player* set-y! (+ (send *player* get-y) delta-y))
-                (send *player* set-y! mouse-y)))
-          
-          (define (can-go-there? x y)
-            (let ((result #t)
-                  (moved-player (new player% [x (+ (send *player* get-x) x)] [y (+ (send *player* get-y) y)] [radius (send *player* get-radius)])))
-                  (begin 
-                    (for-each (lambda (object)
-                                (if (not (or (is-a? object powerbar%) (eq? object *player*)))
-                                    (if (collision? object moved-player)
-                                        (set! result #f)))) (append *object-list* (send *network* get-remote-objects)))
-                    result)))
+        
+        (define (update-player-y!)
+          (if (>= (abs (- (send *player* get-y) mouse-y)) (send *player* get-speed)) 
+              (send *player* set-y! (+ (send *player* get-y) delta-y))
+              (send *player* set-y! mouse-y)))
+        
+        (define (can-go-there? x y)
+          (let ((result #t)
+                (remote-objects (send *network* get-remote-objects))
+                (moved-player (new player% [x (+ (send *player* get-x) x)] [y (+ (send *player* get-y) y)] [radius (send *player* get-radius)])))
+            (begin 
+              (for-each (lambda (object)
+                          (if (not (or (is-a? object powerbar%) (eq? object *player*)))
+                              (if (collision? object moved-player)
+                                  (set! result #f)))) (append *object-list* remote-objects))
+              result)))
 
           (send *player* update-powerbar!)
           (if (can-go-there? delta-x delta-y)
