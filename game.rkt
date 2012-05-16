@@ -13,8 +13,19 @@
            (HEIGHT 21)
            (*update-loop* #f)
            (mouse-x 0)
-           (mouse-y 0))
+           (mouse-y 0)
+           (remote-player-sprite #f))
+    ;--------------set-methods----------------
+    (define/public (set-local-player-sprite! pic-location)
+      (send *player* set-sprite! (make-object bitmap% pic-location 'png/alpha #f))
+      (send *player* set-radius! (round (/ (send (send *player* get-sprite) get-height) 2))))
     
+    (define/public (set-remote-player-sprite! pic-location)
+      (set! remote-player-sprite (make-object bitmap% pic-location 'png/alpha #f)))
+    
+    ;---------------get-methods---------------
+    
+    (define/public (get-remote-player-sprite) remote-player-sprite)
     (define/public (get-width) WIDTH)
     (define/public (get-height) HEIGHT)
     

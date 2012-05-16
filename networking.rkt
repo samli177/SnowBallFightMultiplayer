@@ -115,8 +115,8 @@
     
     (define (remote-make-player . args)
       (new player% 
-           [sprite (make-object bitmap% "blagubbe.png" 'png/alpha #f)]
-           [radius (/ (send (make-object bitmap% "blagubbe.png" 'png/alpha #f) get-width) 2)]
+           [sprite (send new-game get-remote-player-sprite)]
+           [radius (/ (send (make-object bitmap% "red_player.png" 'png/alpha #f) get-width) 2)]
            [x (string->number (car args))]
            [y (string->number (cadr args))]))
     

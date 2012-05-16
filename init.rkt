@@ -90,10 +90,10 @@
     (define/public (power-down!) (set! power 0))
     (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (begin
                                                             (semaphore-wait sync-semaphore)
-                                                            (set! *object-list* (cons (new on-screen% 
+                                                            (set! *object-list* (append *object-list* (list (new on-screen% 
                                                                                                  [sprite youlosepic]
                                                                                                  [x 400]
-                                                                                                 [y 300]) *object-list*))
+                                                                                                 [y 300]))))
                                                             (semaphore-post sync-semaphore)
                                                                   (sleep 0.1)
                                                                   (send new-game stop-update))))
@@ -175,7 +175,7 @@
 
 (define *player*
   (new player% 
-       [sprite (make-object bitmap% "blagubbe.png" 'png/alpha #f)]
+       [sprite (make-object bitmap% "red_player.png" 'png/alpha #f)]
        [powerbar (new powerbar% [sprite (make-object bitmap% "kraft0.png" 'png/alpha #f)])]))
 
 (send *player* set-radius! (round (/ (send (send *player* get-sprite) get-height) 2)))
@@ -192,6 +192,8 @@
 
 
 (define *object-list* (list *player* (send *player* get-powerbar)))
+
+
 
 
 
