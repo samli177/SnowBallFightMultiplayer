@@ -33,7 +33,7 @@
       (define (loop)
         (if (and (not (eq? change-check *object-list*)) sync)
             (begin (send-string (make-message *object-list*)) (set! change-check *object-list*) (set! sync #f)))
-        (sleep .1)
+        (sleep .01)
         (loop))
       (set! change-check *object-list*)
       (loop))
