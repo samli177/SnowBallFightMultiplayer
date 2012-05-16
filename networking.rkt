@@ -137,7 +137,12 @@
     
     (define/public (get-host) host)
     
-    (define/public (get-remote-objects) remote-object-list)
+    (define/public (get-remote-objects) (let ((temp-list '()))
+                                          (begin
+                                          (semaphore-wait rol-semaphore)
+                                          (set! templist remote-object-list)
+                                          (semaphore-post rol-semaphore)
+                                          templist)))
     
     ;---------------------set-methods------------------------
     
