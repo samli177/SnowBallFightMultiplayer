@@ -33,7 +33,7 @@
       (define (loop)
         (if (and (not (eq? change-check *object-list*)) sync)
             (begin (send-string (make-message *object-list*)) (set! change-check *object-list*) (set! sync #f)))
-        (sleep .01)
+        (sleep .1)
         (loop))
       (set! change-check *object-list*)
       (loop))
@@ -144,9 +144,12 @@
                                           (semaphore-post rol-semaphore)
                                           temp-list)))
     
+    (define/public (sync-check) sync)
+    
     ;---------------------set-methods------------------------
     
     (define/public (set-host! new-host) (set! host new-host))
+    (define/public (set-sync! new-sync) (set! sync new-sync))
     
     ;---------------------actions---------------------------
     
@@ -170,4 +173,4 @@
       (set!-values (inport outport) (tcp-connect host port))
       (thread listen-for-data)
       (start-send))))
-    
+
