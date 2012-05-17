@@ -4,7 +4,7 @@
 (load "helpfunctions.rkt")
 
 ;(require graphics/graphics) seems to work without it
-(define sync-semaphore (make-semaphore 1))
+(define *object-list-semaphore* (make-semaphore 1))
 
 (define Game%
   (class object%
@@ -53,9 +53,9 @@
     (define (update-snowballs)
       (define templist (cons (car *object-list*) (cdr *object-list*))) ;; creates new list with the same elements as *object-list*
       (for-each (lambda (object) (if (send object move) (set! templist (remove object templist eq?)))) *object-list*)
-      (semaphore-wait sync-semaphore)
+      (semaphore-wait *object-list-semaphore*)
       (set! *object-list* templist)
-      (semaphore-post sync-semaphore))
+      (semaphore-post *object-list-semaphore*))
    
     (define (update-player) ;; update player is in a need of comments =)
       
@@ -111,17 +111,17 @@
                 ((and (is-a? other-object player%)            ;does my snowball hit a player?
                       (not (eq? other-object *player*)))      ;does my snowball hit the opponent or me? Nothing will happen if I hit myself.
                  (begin (send *network* hit!)
-                        (semaphore-wait sync-semaphore)
+                        (semaphore-wait *object-list-semaphore*)
                         (set! *object-list* (remove snowball *object-list* eq?))
-                        (semaphore-post sync-semaphore))) ;if so, remove the snowball
+                        (semaphore-post *object-list-semaphore*))) ;if so, remove the snowball
                 ((is-a? other-object bunker%) (begin
-                                                (semaphore-wait sync-semaphore)
+                                                (semaphore-wait *object-list-semaphore*)
                                                 (set! *object-list* (remove snowball *object-list* eq?))
-                                                (semaphore-post sync-semaphore))) ;if you hit a bunker, remove the snowball
+                                                (semaphore-post *object-list-semaphore*))) ;if you hit a bunker, remove the snowball
                 ((is-a? other-object snowball%) (begin
-                                                (semaphore-wait sync-semaphore)
+                                                (semaphore-wait *object-list-semaphore*)
                                                 (set! *object-list* (remove snowball *object-list* eq?))
-                                                (semaphore-post sync-semaphore))))))) ;if you hit another snowball, remove the snowball
+                                                (semaphore-post *object-list-semaphore*))))))) ;if you hit another snowball, remove the snowball
           
         
               (if (not (null? crashlist))

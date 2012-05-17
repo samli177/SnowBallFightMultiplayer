@@ -33,20 +33,26 @@
     
     ; Thread that converts the relevant information in *object-list* to a message-string and sends it through the tcp-port.
     (define (send-thread) ; object-list must be synced!!!!!!!!!!!!!!!!!!
-      (let ((tempsync #f))
+      (let ((tempsync #f)
+            (temp-object-list '()))
         (define (loop)
+          (semaphore-wait *object-list-semaphore*) 
+          (set! temp-object-list *object-list*) 
+          (semaphore-post *object-list-semaphore*)
           (semaphore-wait syncflag-semaphore) 
           (set! tempsync sync) 
           (semaphore-post syncflag-semaphore)
-          (if (and (not (eq? change-check *object-list*)) tempsync) ; If *object-list has changed since last time and syncflag is #t 
-              (begin (send-string (make-message *object-list*)) ; Construct message-sring from object-list and send it.
-                     (set! change-check *object-list*) 
+          (if (and (not (eq? change-check temp-object-list)) tempsync) ; If *object-list has changed since last time and syncflag is #t 
+              (begin (send-string (make-message temp-object-list)) ; Construct message-sring from object-list and send it.
+                     (set! change-check temp-object-list) 
                      (begin (semaphore-wait syncflag-semaphore) 
                             (set! sync #f) 
                             (semaphore-post syncflag-semaphore))))
           (sleep .01)
           (loop))
-        (set! change-check *object-list*)
+        (semaphore-wait *object-list-semaphore*) 
+        (set! change-check *object-list*) 
+        (semaphore-post *object-list-semaphore*)
         (loop)))
     
 
@@ -77,7 +83,11 @@
     
     ; uses *object-list*
     (define (hit-player!)
-      (for-each (lambda (object) (if (is-a? object player%) (send object hit!))) *object-list*))
+      (let ((temp-object-list '()))
+        (semaphore-wait *object-list-semaphore*) 
+        (set! temp-object-list *object-list*)
+        (semaphore-post *object-list-semaphore*)
+        (for-each (lambda (object) (if (is-a? object player%) (send object hit!))) *object-list*)))
     
     ; Converts string to list of "wordstrings" ex. "Hello World!" -> '("Hello" "World")
     ; (not fully generalised)
