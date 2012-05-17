@@ -5,48 +5,99 @@
     (super-new)
     (init-field (host "192.168.1.104")
                 (port 9000))
-    (field (inport null)
+    
+   
+    (field (inport null) ; Bound to tcp-port by listen/connect
            (outport null)
-           
-           (remote-word-list '())
-           (remote-object-list '())
-           (change-check '())
-           
-           (rol-semaphore (make-semaphore 1))
-           (sync #t))
+           (remote-object-list '()) ; Contains the moast recent representation of the other players *object-list when networking in active.
+           (change-check '()) ; Used to make sure that the string constucted from *object-list* is sent only once per update-loop.
+           (syncflag-semaphore (make-semaphore 1)) 
+           (remote-object-list-semaphore (make-semaphore 1))
+           (sync #t)) ; Syncflag
+    
+    
     ;--------actual networking-stuff-------
     
-    
+    ; Thread that listens for message-strings from tcp-port 'inport' and sends the messages (as lists of words) to the interpet proc.
     (define (listen-for-data)
+      (define remote-word-list '())
       (define (loop)
-        
-        (set! remote-word-list (string->wordlist (read-line inport 'any)))
-        (if (eof-object? remote-word-list) (display "Error: eof-object")) ; If message is 'sync, set sync #t 
-        (if (eq? (string->symbol (car remote-word-list)) 'sync) (begin (semaphore-wait rol-semaphore) (set! sync #t) (semaphore-post rol-semaphore))
-            (begin (interpet remote-word-list) (send-string "sync")))
+        (set! remote-word-list (string->wordlist (read-line inport 'any))) ; Read tcp-message and convert the recieved string to a list of words 
+        (if (eq? (string->symbol (car remote-word-list)) 'sync) ; If message is 'sync set syncflag true to allow send-thread to send another *object-list* message.
+            (begin (semaphore-wait syncflag-semaphore) 
+                   (set! sync #t) 
+                   (semaphore-post syncflag-semaphore))
+            (begin (interpet remote-word-list) (send-string "sync"))) ; Send sync message to allow other computer to send the next *object-list* message.
         (loop))
       (loop))
     
-    (define/public (start-send)
-      (thread send-thread))
-
-    (define (send-thread)
+    ; Thread that converts the relevant information in *object-list* to a message-string and sends it through the tcp-port.
+    (define (send-thread) ; object-list must be synced!!!!!!!!!!!!!!!!!!
       (let ((tempsync #f))
-      (define (loop)
-        (semaphore-wait rol-semaphore)
-        (set! tempsync sync)
-        (semaphore-post rol-semaphore)
-        (if (and (not (eq? change-check *object-list*)) tempsync)
-            (begin (send-string (make-message *object-list*)) (set! change-check *object-list*) (begin (semaphore-wait rol-semaphore) (set! sync #f) (semaphore-post rol-semaphore))))
-        (sleep .01)
-        (loop))
-      (set! change-check *object-list*)
-      (loop)))
+        (define (loop)
+          (semaphore-wait syncflag-semaphore) 
+          (set! temp-sync sync) 
+          (semaphore-post syncflag-semaphore)
+          (if (and (not (eq? change-check *object-list*)) tempsync) ; If *object-list has changed since last time and syncflag is #t 
+              (begin (send-string (make-message *object-list*)) ; Construct message-sring from object-list and send it.
+                     (set! change-check *object-list*) 
+                     (begin (semaphore-wait syncflag-semaphore) 
+                            (set! sync #f) 
+                            (semaphore-post syncflag-semaphore))))
+          (sleep .01)
+          (loop))
+        (set! change-check *object-list*)
+        (loop)))
+    
+
     
     
     
-    ;----------------interpeting and construction of messages--------------------
+    ;----------------interpeting of messages----------------------------------
     
+    (define (interpet wordlst)
+      (cond 
+        ((eq? (string->symbol (car wordlst)) 'hit) (hit-player!)) ; could possibly cause data-corruption?
+        (else (update-remote-objectlist wordlst))))
+    
+    ; Decodes information in message-string to construct a list approximating the other computers *object-list* and updates remote-object-list.
+    (define (update-remote-objectlist word-list)
+      (let ((temp-object-list '()))
+        (define (new-temp wordlist) ; creates new temporary remote-object-list 
+          (if (null? wordlist) (void)
+              (begin (set! temp-object-list 
+                           (cons (apply (get 'remote-commands (string->symbol (car wordlist))) 
+                                        (cons (cadr wordlist) (cons (caddr wordlist) '())))
+                                 temp-object-list))
+                     (new-temp (cdddr wordlist)))))
+        (new-temp word-list)
+        (semaphore-wait remote-object-list-semaphore)
+        (set! remote-object-list temp-object-list)
+        (semaphore-post remote-object-list-semaphore)))
+    
+    ; uses *object-list*
+    (define (hit-player!)
+      (for-each (lambda (object) (if (is-a? object player%) (send object hit!))) *object-list*))
+    
+    ; Converts string to list of "wordstrings" ex. "Hello World!" -> '("Hello" "World")
+    ; (not fully generalised)
+    (define (string->wordlist string) 
+      (let ((current-word ""))
+        (define (st->w str)
+          (begin
+            (set! current-word (first-word (string->list str)))
+            (cond
+              ((= (string-length current-word) (string-length str)) (cons  current-word '()))
+              ((equal? current-word "") '())
+              (else (cons current-word (st->w (substring str (+ 1 (string-length current-word)))))))))
+        (st->w string)))
+    
+    (define (first-word charlist)
+      (if (or (null? charlist) (equal? (car charlist) #\space))
+          ""
+          (string-append (string (car charlist)) (first-word (cdr charlist)))))
+    
+    ;-----------------construction of messages--------------------
     (define/public (make-message lst) ; Constructs a message string from list of objects
       (let ((str ""))
         (define (msg-loop iter-lst)
@@ -72,43 +123,11 @@
             (else (msg-loop (cdr iter-lst)))))
         (msg-loop lst)))
     
-    (define (interpet wordlst)
-      (cond 
-        ((eq? (string->symbol (car wordlst)) 'hit) (hit-player!))
-        (else (update-remote-objectlist wordlst))))
     
-    (define (hit-player!)
-      (for-each (lambda (object) (if (is-a? object player%) (send object hit!))) *object-list*))
     
-    (define (update-remote-objectlist lst)
-      (let ((temp-object-list '()))
-        (define (new-temp remote-lst)
-          (if (null? remote-lst) (void)
-              (begin (set! temp-object-list 
-                           (cons (apply (get 'remote-commands (string->symbol (car remote-lst))) 
-                                        (cons (cadr remote-lst) (cons (caddr remote-lst) '())))
-                                 temp-object-list))
-                     (new-temp (cdddr remote-lst)))))
-        (new-temp lst)
-        (semaphore-wait rol-semaphore)
-        (set! remote-object-list temp-object-list)
-        (semaphore-post rol-semaphore)))
+  
     
-    (define (first-word charlist)
-      (if (or (null? charlist) (equal? (car charlist) #\space))
-          ""
-          (string-append (string (car charlist)) (first-word (cdr charlist)))))
     
-    (define (string->wordlist string) ;not fully generalised
-      (let ((current-word ""))
-        (define (st->w str)
-          (begin
-            (set! current-word (first-word (string->list str)))
-            (cond
-              ((= (string-length current-word) (string-length str)) (cons  current-word '()))
-              ((equal? current-word "") '())
-              (else (cons current-word (st->w (substring str (+ 1 (string-length current-word)))))))))
-        (st->w string)))
     
     ;-------------------command-table init---------------------
     (define (remote-make-snowball . args)
@@ -144,9 +163,9 @@
     
     (define/public (get-remote-objects) (let ((temp-list '()))
                                           (begin
-                                          (semaphore-wait rol-semaphore)
+                                          (semaphore-wait remote-object-list-semaphore)
                                           (set! temp-list remote-object-list)
-                                          (semaphore-post rol-semaphore)
+                                          (semaphore-post remote-object-list-semaphore)
                                           temp-list)))
     
     (define/public (sync-check) sync)
@@ -159,20 +178,23 @@
     ;---------------------actions---------------------------
     
     
+    (define/public (send-string string)
+      (display string outport)
+      (newline outport) ; newline + empty-string seems to be the only way to get racket to send anything over tcp...
+      (display "" outport))
     
+    (define/public (hit!)
+      (send-string "hit"))
+    
+       (define/public (start-send)
+      (thread send-thread))
+    
+        
     (define/public (listen)
       (let ((listener (tcp-listen port 1 #t)))
         (set!-values (inport outport) (tcp-accept listener))
         (thread listen-for-data)
         (start-send)))
-    
-    (define/public (send-string string)
-      (display string outport)
-      (newline outport)
-      (display "" outport))
-    
-    (define/public (hit!)
-      (send-string "hit"))
     
     (define/public (connect) 
       (set!-values (inport outport) (tcp-connect host port))
