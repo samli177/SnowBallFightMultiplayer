@@ -193,8 +193,8 @@
       (newline outport) ; newline + empty-string seems to be the only way to get racket to send anything over tcp...
       (display "" outport))
     
-    (define/public (hit!) (void))
-      ;(send-string "hit"))
+    (define/public (hit!) 
+      (send-string "hit"))
     
        (define/public (start-send)
       (thread send-thread))
@@ -203,11 +203,9 @@
     (define/public (listen)
       (let ((listener (tcp-listen port 1 #t)))
         (set!-values (inport outport) (tcp-accept listener))
-        (thread listen-for-data)
-        (start-send)))
+        (thread listen-for-data)))
     
     (define/public (connect) 
       (set!-values (inport outport) (tcp-connect host port))
-      (thread listen-for-data)
-      (start-send))))
+      (thread listen-for-data))))
 

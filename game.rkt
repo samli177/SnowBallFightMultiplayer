@@ -34,7 +34,7 @@
     (define (draw)
       (clear)
       (draw-object-list *object-list*)
-      ;;(draw-object-list (send *network* get-remote-objects)) 
+      (draw-object-list (send *network* get-remote-objects)) 
       (show))
     
     (define (draw-object-list object-list)
@@ -47,7 +47,7 @@
     (define (update)
       (update-snowballs)
       (update-player)
-      (collisionhandler (append *object-list*)) ;; (send *network* get-remote-objects)))
+      ;(collisionhandler (append *object-list* (send *network* get-remote-objects)))
       (draw))
     
     (define (update-snowballs)
@@ -77,7 +77,7 @@
         
         (define (can-go-there? x y)
           (let ((result #t)
-                (remote-objects '()) ;; (send *network* get-remote-objects))
+                (remote-objects (send *network* get-remote-objects))
                 (moved-player (new player% [x (+ (send *player* get-x) x)] [y (+ (send *player* get-y) y)] [radius (send *player* get-radius)])))
             (begin 
               (for-each (lambda (object)
