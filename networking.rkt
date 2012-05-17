@@ -87,7 +87,7 @@
         (semaphore-wait *object-list-semaphore*) 
         (set! temp-object-list *object-list*)
         (semaphore-post *object-list-semaphore*)
-        (for-each (lambda (object) (if (is-a? object player%) (send object hit!))) *object-list*)))
+        (for-each (lambda (object) (if (is-a? object player%) (send object hit!))) temp-object-list)))
     
     ; Converts string to list of "wordstrings" ex. "Hello World!" -> '("Hello" "World")
     ; (not fully generalised)
@@ -193,8 +193,8 @@
       (newline outport) ; newline + empty-string seems to be the only way to get racket to send anything over tcp...
       (display "" outport))
     
-    (define/public (hit!)
-      (send-string "hit"))
+    (define/public (hit!) (void))
+      ;(send-string "hit"))
     
        (define/public (start-send)
       (thread send-thread))
