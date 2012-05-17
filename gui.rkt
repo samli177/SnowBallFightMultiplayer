@@ -75,11 +75,10 @@
           ((left-up)
            (begin
              (send power-timer stop)
-              (semaphore-wait sync-semaphore) ; to avoid conflict in *object-list*
+              (semaphore-wait *object-list-semaphore*) ; to avoid conflict in *object-list*
               (set! *object-list* (cons (send *player* throw) *object-list*))
-              (semaphore-post sync-semaphore)
+              (semaphore-post *object-list-semaphore*)
               (send *player* power-down!)))
-              
           ((right-down)
            (background (random 255) (random 255) (random 255)))
           ((motion)
