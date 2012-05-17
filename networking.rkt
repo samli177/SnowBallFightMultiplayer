@@ -13,6 +13,7 @@
            (change-check '()) ; Used to make sure that the string constucted from *object-list* is sent only once per update-loop.
            (syncflag-semaphore (make-semaphore 1)) 
            (remote-object-list-semaphore (make-semaphore 1))
+           (send-semaphore (make-semaphore 1))
            (sync #t)) ; Syncflag
     
     
@@ -39,9 +40,11 @@
           (semaphore-wait *object-list-semaphore*) 
           (set! temp-object-list *object-list*) 
           (semaphore-post *object-list-semaphore*)
+          
           (semaphore-wait syncflag-semaphore) 
           (set! tempsync sync) 
           (semaphore-post syncflag-semaphore)
+          
           (if (and (not (eq? change-check temp-object-list)) tempsync) ; If *object-list has changed since last time and syncflag is #t 
               (begin (send-string (make-message temp-object-list)) ; Construct message-sring from object-list and send it.
                      (set! change-check temp-object-list) 
@@ -189,9 +192,11 @@
     
     
     (define/public (send-string string)
+      (semaphore-wait send-semaphore)
       (display string outport)
       (newline outport) ; newline + empty-string seems to be the only way to get racket to send anything over tcp...
-      (display "" outport))
+      (display "" outport)
+      (semaphore-post send-semaphore))
     
     (define/public (hit!) 
       (send-string "hit"))
