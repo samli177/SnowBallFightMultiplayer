@@ -36,7 +36,7 @@
       (let ((tempsync #f))
         (define (loop)
           (semaphore-wait syncflag-semaphore) 
-          (set! temp-sync sync) 
+          (set! tempsync sync) 
           (semaphore-post syncflag-semaphore)
           (if (and (not (eq? change-check *object-list*)) tempsync) ; If *object-list has changed since last time and syncflag is #t 
               (begin (send-string (make-message *object-list*)) ; Construct message-sring from object-list and send it.
