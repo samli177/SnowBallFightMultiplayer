@@ -6,20 +6,49 @@
     
     (init-field (x 0) (y 0)   ;; position of object on screen 
                 (radius 0)   ;; space occupied by object on screen
-                (sprite "")) ;; path to image representing object on screen 
+                (sprite "")
+                (position-semaphore (make-semaphore 1))) ;; path to image representing object on screen 
     
     
     ;---------------set-methods-------------------
-    (define/public (set-xy! new-x new-y) (begin (set! x new-x) (set! y new-y)))
-    (define/public (set-x! new-x) (set! x new-x))
-    (define/public (set-y! new-y) (set! y new-y))
+    (define/public (set-xy! new-x new-y) 
+      (begin 
+        (semaphore-wait position-semaphore)
+        (set! x new-x) 
+        (set! y new-y)
+        (semaphore-post position-semaphore)))
+    
+    (define/public (set-x! new-x) 
+      (semaphore-wait position-semaphore)
+      (set! x new-x)
+      (semaphore-post position-semaphore))
+    
+    (define/public (set-y! new-y) 
+      (semaphore-wait position-semaphore)
+      (set! y new-y)
+      (semaphore-post position-semaphore))
+    
     (define/public (set-radius! new-radius) (set! radius new-radius))
     (define/public (set-sprite! new-sprite) (set! sprite new-sprite))
     
     
     ;--------------get-methods-------------------
-    (define/public (get-x) x)
-    (define/public (get-y) y)
+    (define/public (get-x) 
+      (let ((temp 0))
+        (begin
+        (semaphore-wait position-semaphore)
+        (set! temp x)
+        (semaphore-post position-semaphore)
+        temp)))
+    
+    (define/public (get-y) 
+      (let ((temp 0))
+        (begin
+        (semaphore-wait position-semaphore)
+        (set! temp y)
+        (semaphore-post position-semaphore)
+        temp)))
+    
     (define/public (get-radius) radius)
     (define/public (get-sprite) sprite)
     
