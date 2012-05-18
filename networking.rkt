@@ -143,24 +143,27 @@
     
     
     ;-------------------command-table init---------------------
+    (define snowall-sprite (make-object bitmap% "snowballe.png" 'png/alpha #f))
+    (define bunker-sprite (make-object bitmap% "bunker.png" 'png/alpha #f))
+    
     (define (remote-make-snowball . args)
       (new snowball% 
-           [sprite (make-object bitmap% "snowballe.png" 'png/alpha #f)]
-           [radius (/ (send (make-object bitmap% "snowball.png" 'png/alpha #f) get-width) 2)]
+           [sprite snowball-sprite]
+           [radius (/ (send snowball-sprite get-width) 2)]
            [x (string->number (car args))]
            [y (string->number (cadr args))]))
     
     (define (remote-make-player . args)
       (new player% 
            [sprite (send new-game get-remote-player-sprite)]
-           [radius (/ (send (make-object bitmap% "red_player.png" 'png/alpha #f) get-width) 2)]
+           [radius (/ (send (send new-game get-remote-player-sprite) get-width) 2)]
            [x (string->number (car args))]
            [y (string->number (cadr args))]))
     
     (define (remote-make-bunker . args)
       (new bunker% 
-           [sprite (make-object bitmap% "bunker.png" 'png/alpha #f)]
-           [radius (/ (send (make-object bitmap% "bunker.png" 'png/alpha #f) get-width) 2)]
+           [sprite bunker-sprite]
+           [radius (/ (send bunker-sprite get-width) 2)]
            [x (string->number (car args))]
            [y (string->number (cadr args))]))
     
