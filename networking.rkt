@@ -145,6 +145,7 @@
     ;-------------------command-table init---------------------
     (define snowball-sprite (make-object bitmap% "snowballe.png" 'png/alpha #f))
     (define bunker-sprite (make-object bitmap% "bunker.png" 'png/alpha #f))
+    (define empty-powerbar (new powerbar% [sprite (make-object bitmap% "kraft0.png" 'png/alpha #f)
     
     (define (remote-make-snowball . args)
       (new snowball% 
@@ -157,6 +158,7 @@
       (new player% 
            [sprite (send new-game get-remote-player-sprite)]
            [radius (/ (send (send new-game get-remote-player-sprite) get-width) 2)]
+           [powerbar empty-powerbar]
            [x (string->number (car args))]
            [y (string->number (cadr args))]))
     

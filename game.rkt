@@ -47,7 +47,7 @@
     (define (update)
       (update-snowballs)
       (update-player)
-      ;(collisionhandler (append *object-list* (send *network* get-remote-objects)))
+      (collisionhandler (append *object-list* (send *network* get-remote-objects)))
       (draw))
     
     (define (update-snowballs)
