@@ -145,7 +145,7 @@
     ;-------------------command-table init---------------------
     (define snowball-sprite (make-object bitmap% "snowballe.png" 'png/alpha #f))
     (define bunker-sprite (make-object bitmap% "bunker.png" 'png/alpha #f))
-    (define empty-powerbar (new powerbar% [sprite (make-object bitmap% "kraft0.png" 'png/alpha #f)
+    (define empty-powerbar (new powerbar% [sprite (make-object bitmap% "kraft0.png" 'png/alpha #f)]))
     
     (define (remote-make-snowball . args)
       (new snowball% 
