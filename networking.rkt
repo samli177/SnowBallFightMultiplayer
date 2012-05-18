@@ -67,7 +67,7 @@
     (define (interpet wordlst)
       (cond 
         ((eq? (string->symbol (car wordlst)) 'hit) (hit-player!)) ; could possibly cause data-corruption?
-        (else (update-remote-objectlist wordlst))))
+        (else (print wordlst))));(update-remote-objectlist wordlst))))
     
     ; Decodes information in message-string to construct a list approximating the other computers *object-list* and updates remote-object-list.
     (define (update-remote-objectlist word-list)
@@ -189,7 +189,6 @@
     (define/public (set-sync! new-sync) (set! sync new-sync))
     
     ;---------------------actions---------------------------
-    
     
     (define/public (send-string string)
       (semaphore-wait send-semaphore)
