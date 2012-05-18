@@ -143,7 +143,7 @@
     
     
     ;-------------------command-table init---------------------
-    (define snowall-sprite (make-object bitmap% "snowballe.png" 'png/alpha #f))
+    (define snowball-sprite (make-object bitmap% "snowballe.png" 'png/alpha #f))
     (define bunker-sprite (make-object bitmap% "bunker.png" 'png/alpha #f))
     
     (define (remote-make-snowball . args)
