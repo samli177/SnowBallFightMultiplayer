@@ -212,9 +212,11 @@
     (define/public (listen)
       (let ((listener (tcp-listen port 1 #t)))
         (set!-values (inport outport) (tcp-accept listener))
-        (thread listen-for-data)))
+        (thread listen-for-data)
+        (start-send)))
     
     (define/public (connect) 
       (set!-values (inport outport) (tcp-connect host port))
-      (thread listen-for-data))))
+      (thread listen-for-data)
+      (start-send))))
 
