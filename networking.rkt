@@ -33,7 +33,7 @@
       (loop))
     
     ; Thread that converts the relevant information in *object-list* to a message-string and sends it through the tcp-port.
-    (define (send-thread) ; object-list must be synced!!!!!!!!!!!!!!!!!!
+    (define (send-thread)
       (let ((tempsync #f)
             (temp-object-list '()))
         (define (loop)
@@ -67,7 +67,7 @@
     (define (interpet wordlst)
       (cond 
         ((eq? (string->symbol (car wordlst)) 'hit) (hit-player!)) ; could possibly cause data-corruption?
-        (else (print wordlst))));(update-remote-objectlist wordlst))))
+        (else (update-remote-objectlist wordlst))))
     
     ; Decodes information in message-string to construct a list approximating the other computers *object-list* and updates remote-object-list.
     (define (update-remote-objectlist word-list)
