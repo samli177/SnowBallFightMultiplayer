@@ -116,7 +116,7 @@
                                                   [sprite sprite]
                                                   [radius radius]
                                                   [x generated-x]
-                                                  [x generated-y])
+                                                  [y generated-y])
                                              *object-list*))
                    (weaponadder (- number 1))))))
     
