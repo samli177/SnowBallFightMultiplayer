@@ -101,7 +101,8 @@
                 (weapon #f)
                 (snowball-sprite (make-object bitmap% "pics/snowballe.png" 'png/alpha #f))
                 (weapon-sprite (make-object bitmap% "pics/weapon-projectile.png" 'png/alpha #f))
-                (youlosepic (make-object bitmap% "pics/youlosepic.png" 'png/alpha #f)))
+                (youlosepic (make-object bitmap% "pics/youlosepic.png" 'png/alpha #f))
+                (youwinpic (make-objecet bitmap% "pics/youwinpic.png" 'png/alpha #f)))
     
     ;---------------set-methods-------------------
     (define/public (set-hp! new-hp) (set! hp new-hp))
@@ -125,13 +126,17 @@
     (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) 
                               (begin
                                 (semaphore-wait *object-list-semaphore*)
-                                (set! *object-list* (append *object-list* (list (new on-screen% 
-                                                                                     [sprite youlosepic]
-                                                                                     [x 400]
-                                                                                     [y 300]))))
+                                (send (send new-game get-network) send-string "you-win")
+                                (set! *object-list* 
+                                      (append *object-list* 
+                                              (list (new on-screen% 
+                                                         [sprite youlosepic]
+                                                         [x 400]
+                                                         [y 300]))))
                                 (semaphore-post *object-list-semaphore*)
                                 (sleep 0.1)
                                 (send new-game stop-update))))
+    
     (define/public (throw) 
       (if (not weapon)           ;no weapon
           (let((old-power power))
