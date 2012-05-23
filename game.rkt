@@ -7,7 +7,7 @@
 ;Otherwise above a use of "define" or if the comments are in 
 ;the middle of a code, they will be found directly below the commented code.
 
-;(require graphics/graphics) seems to work without it
+
 (define *object-list-semaphore* (make-semaphore 1))
 
 (define Game%
@@ -138,7 +138,7 @@
                                              *object-list*))
                    (bunkeradder (- number 1))))))
     
-    (define/public (weaponadder)
+    (define (weaponadder)
       (let* ((sprite (make-object bitmap% "pics/weaponbox.png" 'png/alpha #f))
              (radius (send sprite get-height))
              (generated-x (+ 300 (random 600)))
@@ -149,6 +149,9 @@
                                               [x generated-x]
                                               [y generated-y])
                                          *object-list*)))))
+    
+    (define/public (start-weapon-adder)
+      (thread weaponadder))
   
     
     
