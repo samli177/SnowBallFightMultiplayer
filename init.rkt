@@ -145,7 +145,7 @@
           
           (let((old-power power)) ;with weapon
             (begin
-              (set! power 5)
+              (set! power 15)
               (new snowball% 
                    [sprite weapon-sprite]
                    [x (+ (* side (+ (get-radius) 2)) (get-x))]
