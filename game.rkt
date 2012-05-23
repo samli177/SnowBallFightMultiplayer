@@ -48,7 +48,7 @@
     
     (define (update-snowballs)
       (define templist (cons (car *object-list*) (cdr *object-list*)))
-      ;; creates new list with the same elements as *object-list*
+      ; creates new list with the same elements as *object-list*
       
       (for-each (lambda (object) 
                   (if (send object move) 
@@ -159,6 +159,14 @@
              (y (- y2 y1))
              (length (sqrt (+ (sqr x) (sqr y)))))
         (if (= length 0) (cons 0 0) (cons (/ x length) (/ y length)))))
+    
+    (define/public (win!)
+      (set! *object-list* 
+            (append *object-list* 
+                    (list (new on-screen% 
+                               [sprite youwinpic]
+                               [x 400]
+                               [y 300])))))
     
     ;-----------Function to handle collissions----------
     
