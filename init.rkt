@@ -121,27 +121,39 @@
     ;---------------actions----------------------
     (define/public (power-up!) (set! power (+ 1 power)))
     (define/public (power-down!) (set! power 0))
-    (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (begin
-                                                            (semaphore-wait *object-list-semaphore*)
-                                                            (set! *object-list* (append *object-list* (list (new on-screen% 
-                                                                                                 [sprite youlosepic]
-                                                                                                 [x 400]
-                                                                                                 [y 300]))))
-                                                            (semaphore-post *object-list-semaphore*)
-                                                                  (sleep 0.1)
-                                                                  (send new-game stop-update))))
-    (define/public (throw) (let((old-power power))
-                             (begin
-                               (set! power 0)
-                               (new snowball% 
-                                    [sprite snowball-sprite]
-                                    [x (+ (* side (+ (get-radius) 2)) (get-x))]
-                                    [y (get-y)]
-                                    [speed (* side old-power)]))))
+    (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) 
+                              (begin
+                                (semaphore-wait *object-list-semaphore*)
+                                (set! *object-list* (append *object-list* (list (new on-screen% 
+                                                                                     [sprite youlosepic]
+                                                                                     [x 400]
+                                                                                     [y 300]))))
+                                (semaphore-post *object-list-semaphore*)
+                                (sleep 0.1)
+                                (send new-game stop-update))))
+    (define/public (throw) 
+      (if (not weapon)           ;no weapon
+          (let((old-power power))
+            (begin
+              (set! power 0)
+              (new snowball% 
+                   [sprite snowball-sprite]
+                   [x (+ (* side (+ (get-radius) 2)) (get-x))]
+                   [y (get-y)]
+                   [speed (* side old-power)])))
+          
+          (let((old-power power)) ;with weapon
+            (begin
+              (set! power 5)
+              (new snowball% 
+                   [sprite weapon-sprite]
+                   [x (+ (* side (+ (get-radius) 2)) (get-x))]
+                   [y (get-y)]
+                   [speed (* side old-power)]))))
     
-    (define/public (update-powerbar!) (begin (if (not (eq? power (send powerbar get-power))) (send powerbar set-power! power))
-                                             (send powerbar set-x! (get-x))
-                                             (send powerbar set-y! (- (get-y) (get-radius)))))))
+      (define/public (update-powerbar!) (begin (if (not (eq? power (send powerbar get-power))) (send powerbar set-power! power))
+                                               (send powerbar set-x! (get-x))
+                                               (send powerbar set-y! (- (get-y) (get-radius)))))))
 
                                 
     
