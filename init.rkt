@@ -188,19 +188,9 @@
     ;---------------actions----------------------
     (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (stop-update)))))
   
-    
-;---------testing--------------
-(define *test-osc* (new on-screen%))
-(send *test-osc* set-xy! 1 2)
 
-(define *test-pla* (new player%))
-
-(define *test-snow* (new snowball%))
-
-(define *test-bunker* (new bunker%))
 
 ;----------instances-------------
-
 
 (define *player*
   (new player% 
@@ -209,14 +199,10 @@
 
 (send *player* set-radius! (round (/ (send (send *player* get-sprite) get-height) 2)))
 
-                
-     
-
-
 (define *network* (new network-session%))
 
 
-;------------pictures-----------
+;------------object-list-----------
 
 
 
