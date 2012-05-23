@@ -9,7 +9,7 @@
    
     (field (inport null) ; Bound to tcp-port by listen/connect
            (outport null)
-           (player-sprite (make-object bitmap% "blue_player.png" 'png/alpha #f))
+           (player-sprite (make-object bitmap% "pics/blue_player.png" 'png/alpha #f))
            (player-radius 0)
            (remote-object-list '()) ; Contains the moast recent representation of the other players *object-list when networking in active.
            (change-check '()) ; Used to make sure that the string constucted from *object-list* is sent only once per update-loop.
@@ -141,13 +141,13 @@
 
     
     ;-------------------command-table init---------------------
-    (define snowball-sprite (make-object bitmap% "snowballe.png" 'png/alpha #f))
+    (define snowball-sprite (make-object bitmap% "pics/snowballe.png" 'png/alpha #f))
     (define snowball-radius (/ (send snowball-sprite get-height) 2))
     
-    (define bunker-sprite (make-object bitmap% "bunker.png" 'png/alpha #f))
+    (define bunker-sprite (make-object bitmap% "pics/bunker.png" 'png/alpha #f))
     (define bunker-radius (/ (send bunker-sprite get-height) 2))
     
-    (define empty-powerbar (new powerbar% [sprite (make-object bitmap% "kraft0.png" 'png/alpha #f)]))
+    (define empty-powerbar (new powerbar% [sprite (make-object bitmap% "pics/kraft0.png" 'png/alpha #f)]))
     
     (define (remote-make-snowball . args)
       (new snowball% 
