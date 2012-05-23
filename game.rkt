@@ -195,7 +195,7 @@
                                                     (make-object bitmap% "pics/red_playerweapon.png" 'png/alpha #f)
                                                     (make-object bitmap% "pics/blue_playerweapon.png" 'png/alpha #f)))
                      (if (occurs? weapon *object-list*) ;is the weapon in my object-list or does it come from the other players list? 
-                         (set! *object-list* (remove weapon *object-list*))
+                         (remove-weapon!)
                          (send network weapon-is-taken!))))))
       
       (if (not (null? crashlist))
@@ -213,8 +213,12 @@
     
     
     (define/public (remove-weapon!)
-      (display "weapon removed"))
-    
+      (semaphore-wait *object-list-semaphore*)
+      (if (is-a? (car *object-list*) weapon%)
+          (set! *object-list* (cdr *object-list*))
+          (set! *object-list* (remove weapon% *object-list* is-a?)))
+      (semaphore-post *object-list-semaphore*))
+    ;remove can ommits the car in a list, hence the if
     
     (define/public (update-mouse x y)
       (set! mouse-x x)
