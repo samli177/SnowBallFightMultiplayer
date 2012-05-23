@@ -17,7 +17,7 @@
            (gui (new gui-interface%))
            (update-semaphore (make-semaphore 1))
            (network (new network-session%)))
-           
+    
     ;--------------set-methods----------------
     (define/public (set-local-player-sprite! pic-location)
       (send *player* set-sprite! (make-object bitmap% pic-location 'png/alpha #f))
@@ -35,19 +35,7 @@
     (define/public (get-height) HEIGHT)
     (define/public (get-network) network)
     
-    
-    (define (draw)
-      (send gui clear)
-      (draw-object-list *object-list*)
-      (draw-object-list (send network get-remote-objects)) 
-      (send gui show))
-    
-    (define (draw-object-list object-list)
-      (for-each (lambda (object)           ;iterates through a list with all the objects and draws the objects images on the objects coordinates
-                                (send gui draw-pic (send object get-sprite)
-                                          (- (send object get-x) (/ (send (send object get-sprite) get-width) 2)) 
-                                          (- (send object get-y) (/ (send (send object get-sprite) get-height) 2))))
-                object-list))
+    ;--------------update functions---------
     
     (define (update)
       (semaphore-wait update-semaphore)
@@ -63,8 +51,8 @@
       (semaphore-wait *object-list-semaphore*)
       (set! *object-list* templist)
       (semaphore-post *object-list-semaphore*))
-   
-    (define (update-player) ;; update player is in a need of comments =)
+    
+    (define (update-player) 
       
       (let* ((dir-v (directional-vector (send *player* get-x) (send *player* get-y) mouse-x mouse-y))
              (dir-x (car dir-v))
@@ -92,19 +80,78 @@
                               (if (collision? object moved-player)
                                   (set! result #f)))) (append *object-list* remote-objects))
               result)))
-
-          (send *player* update-powerbar!)
-          (if (can-go-there? delta-x delta-y)
-              (begin
-                (update-player-x!)
-                (update-player-y!)))))
+        
+        (send *player* update-powerbar!)
+        (if (can-go-there? delta-x delta-y)
+            (begin
+              (update-player-x!)
+              (update-player-y!)))))
+    
+    
+    ;-------functions to add items to the game------------
+    
+    (define/public (bunkeradder number) ;adds bunkers in the quantity of "number" to the battle field
+      (let* ((sprite (make-object bitmap% "pics/bunker.png" 'png/alpha #f))
+             (radius (/ (send sprite get-height) 2))
+             (generated-x (+ 300 (random 600)))
+             (generated-y (+ 100 (random 300))))
+        (if (= number 0) 
+            (void)
+            (begin (set! *object-list* (cons (new bunker%   
+                                                  [sprite sprite]   
+                                                  [radius radius]
+                                                  [x generated-x]
+                                                  [y generated-y])
+                                             *object-list*))
+                   (bunkeradder (- number 1))))))
+    
+    (define/public (weaponadder number)
+      (let* ((sprite (make-object bitmap% "pics/weaponbox.png" 'png/alpha #f))
+             (radius (send sprite get-height))
+             (generated-x (+ 300 (random 600)))
+             (generated-y (+ 100 (random 300))))
+        (if (= number 0)
+            (void)
+            (begin (set! *object-list* (cons (new weapon%
+                                                  [sprite sprite]
+                                                  [radius radius]
+                                                  [x generated-x]
+                                                  [x generated-y])
+                                             *object-list*))
+                   (weaponadder (- number 1))))))
+    
+    
+    
+    
+    
+    
+    
+    
+    (define (draw)
+      (send gui clear)
+      (draw-object-list *object-list*)
+      (draw-object-list (send network get-remote-objects)) 
+      (send gui show))
+    
+    (define (draw-object-list object-list)
+      (for-each (lambda (object)           ;iterates through a list with all the objects and draws the objects images on the objects coordinates
+                  (send gui draw-pic (send object get-sprite)
+                        (- (send object get-x) (/ (send (send object get-sprite) get-width) 2)) 
+                        (- (send object get-y) (/ (send (send object get-sprite) get-height) 2))))
+                object-list))
+    
+    
+    
+    
+    
+    
     
     (define (directional-vector x1 y1 x2 y2)
       (let* ((x (- x2 x1))
              (y (- y2 y1))
              (length (sqrt (+ (sqr x) (sqr y)))))
         (if (= length 0) (cons 0 0) (cons (/ x length) (/ y length)))))
-      
+    
     
     
     (define (collisionhandler crashlist)
@@ -126,9 +173,9 @@
                                                 (set! *object-list* (remove snowball *object-list* eq?))
                                                 (semaphore-post *object-list-semaphore*))) ;if you hit a bunker, remove the snowball
                 ((is-a? other-object snowball%) (begin
-                                                (semaphore-wait *object-list-semaphore*)
-                                                (set! *object-list* (remove snowball *object-list* eq?))
-                                                (semaphore-post *object-list-semaphore*))))))) ;if you hit another snowball, remove the snowball
+                                                  (semaphore-wait *object-list-semaphore*)
+                                                  (set! *object-list* (remove snowball *object-list* eq?))
+                                                  (semaphore-post *object-list-semaphore*))))))) ;if you hit another snowball, remove the snowball
       
       (define (weaponcollission first-object second-object)
         (let*
@@ -139,26 +186,26 @@
                      (if (occurs? weapon *object-list*) ;is the weapon in my object-list or does it come from the other players list? 
                          (set! *object-list* remove weapon *object-list*)
                          (send network weapon-is-taken!))))))
-                     
-                
-        
-              (if (not (null? crashlist))
-                  (let ((first-object (car crashlist))) 
-                    (for-each  
-                     (lambda (second-object) 
-                       (if (collision? first-object second-object) ;will the two objects collide?
-                           (cond 
-                             ((or (is-a? first-object snowball%) (is-a? second-object snowball%))
-                              (snowballcollission first-object second-object))
-                             ((or (is-a? first-object weapon%) (is-a?second-object weapon%))
-                              (weaponcollision first-object second-object))))
-                     (cdr crashlist)))             
-                  (collisionhandler (cdr crashlist))))
-        
       
+      
+      
+      (if (not (null? crashlist))
+          (let ((first-object (car crashlist))) 
+            (for-each  
+             (lambda (second-object) 
+               (if (collision? first-object second-object) ;will the two objects collide?
+                   (cond 
+                     ((or (is-a? first-object snowball%) (is-a? second-object snowball%))
+                      (snowballcollission first-object second-object))
+                     ((or (is-a? first-object weapon%) (is-a?second-object weapon%))
+                      (weaponcollision first-object second-object))))
+               (cdr crashlist)))             
+            (collisionhandler (cdr crashlist)))))
     
-      
-      
+    
+    
+    
+    
     (define/public (update-mouse x y)
       (set! mouse-x x)
       (set! mouse-y y))
@@ -169,54 +216,27 @@
     
     (define/public (stop-update)
       (send *update-loop* stop))
-        
+    
     (define/public (start-update)
       (set! *update-loop* (new timer%
-                             [notify-callback update]
-                             [interval 20]
-                             [just-once? #f])))
+                               [notify-callback update]
+                               [interval 20]
+                               [just-once? #f])))
     
-      
+    
     (define/public (start-game)
       (send gui show-gui)
       (send gui draw-text "welcome to snowballfight" 350 300 (send gui get-pen) (send gui get-brush))
       (send gui draw-text "After you have either connected or started listening, press pray game!" 200 350 (send gui get-pen) (send gui get-brush)))
     
-    (define/public (bunkeradder number) ;adds bunkers in the quantity of "number" to the battle field
-      (let* ((sprite (make-object bitmap% "pics/bunker.png" 'png/alpha #f))
-             (radius (/ (send sprite get-height) 2))
-             (generated-x (+ 300 (random 600)))
-             (generated-y (+ 100 (random 300))))
-        (if (= number 0) 
-            (void)
-            (begin (set! *object-list* (cons (new bunker%   
-                                                  [sprite sprite]   
-                                                  [radius radius]
-                                                  [x generated-x]
-                                                  [y generated-y])
-                                             *object-list*))
-                   (bunkeradder (- number 1))))))
-      
-      (define/public (weaponadder number)
-        (let* ((sprite (make-object bitmap% "pics/weaponbox.png" 'png/alpha #f))
-               (radius (send sprite get-height))
-               (generated-x (+ 300 (random 600)))
-               (generated-y (+ 100 (random 300))))
-          (if (= number 0)
-              (void)
-              (begin (set! *object-list* (cons (new weapon%
-                                                    [sprite sprite]
-                                                    [radius radius]
-                                                    [x generated-x]
-                                                    [x generated-y])
-                                               *object-list*))
-                     (weaponadder (- number 1))))))))
-               
-        
-      
-
-
-
-
-(define new-game (new Game%))
-(send new-game start-game)
+    
+    
+    
+    
+    
+    
+    
+    
+    (define new-game (new Game%))
+    (send new-game start-game)
+    
