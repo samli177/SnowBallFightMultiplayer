@@ -143,7 +143,7 @@
     (define snowball-raduis (/ (send snowball-sprite get-height) 2))
     
     (define bunker-sprite (make-object bitmap% "bunker.png" 'png/alpha #f))
-    (define bunker-raduis (/ (send bunker-sprite get-height) 2))
+    (define bunker-radius (/ (send bunker-sprite get-height) 2))
     
     (define empty-powerbar (new powerbar% [sprite (make-object bitmap% "kraft0.png" 'png/alpha #f)]))
     
