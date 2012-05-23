@@ -66,6 +66,10 @@
                      (send new-game set-local-player-sprite! "pics/blue_player.png")
                      (send new-game set-remote-player-sprite! "pics/red_player.png")
                      (send *player* set-xy! 1140 300) ;coordinates for spawning
+                     (new timer% 
+                          [notify-callback weaponadder]
+                          [interval (* 1000 (random 30))]
+                          [just-once #t])
                      (send new-game bunkeradder 
                            (string->number (get-text-from-user 
                                             "Please enter how many bunkers you 
