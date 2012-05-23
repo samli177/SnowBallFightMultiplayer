@@ -100,6 +100,7 @@
                 (powerbar #f)
                 (weapon #f)
                 (snowball-sprite (make-object bitmap% "pics/snowballe.png" 'png/alpha #f))
+                (weapon-sprite (make-object bitmap% "pics/weapon-projectile.png" 'png/alpha #f))
                 (youlosepic (make-object bitmap% "pics/youlosepic.png" 'png/alpha #f)))
     
     ;---------------set-methods-------------------
@@ -153,83 +154,77 @@
       
       (define/public (update-powerbar!) (begin (if (not (eq? power (send powerbar get-power))) (send powerbar set-power! power))
                                                (send powerbar set-x! (get-x))
-                                               (send powerbar set-y! (- (get-y) (get-radius)))))))
-  
-  
-  
-  
-  
-  
-  
-  
-  (define snowball%
-    (class on-screen%
-      (super-new)
-      (inherit set-x! get-x)
-      (init-field (speed 10) (duration 100) (counter 0)) ; speed is negative for snowballs thrown left
-      
-      ;---------------set-methods-----------------
-      (define/public (set-throw_param! new-speed new-duration) (begin (set! speed new-speed) 
-                                                                      (set! duration new-duration)))
-      
-      (define/public (set-power! power) (begin (set! speed power) 
-                                               (set! duration (abs power)))) ; likely to be modifyed
-      
-      ;---------------get-methods------------------
-      (define/public (get-speed) speed)
-      (define/public (get-duration) duration)
-      
-      ;---------------actions---------------------
-      (define/override (move) ; Returns #t when maximum duration is reached
-        (begin 
-          (if (and (> speed 0)(= 10 counter)) (begin (set! speed (- speed 1)) (set! counter 0)))
-          (if (and (< speed 0)(= 10 counter)) (begin (set! speed (+ speed 1)) (set! counter 0)))
-          (set! counter (+ counter 1))
-          (set-x! (+ (get-x) speed)) 
-          (set! duration (- duration 1)) (= duration 0)))))
-  
-  
-  (define bunker%
-    (class on-screen%
-      ;(inherit get-x get-y get-radius)
-      (super-new)
-      (field (hp 100)) ; hitpoints
-      
-      ;---------------set-methods-------------------
-      (define/public (set-hp! new-hp) (set! hp new-hp))
-      
-      ;---------------get-methods------------------
-      (define/public (get-hp) hp)
-      (define/public (broken?) (not (= hp 0)))
-      ;---------------actions----------------------
-      (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (stop-update)))))
-  
-  
-  
-  ;----------instances-------------
-  
-  (define *player*
-    (new player% 
-         [sprite (make-object bitmap% "pics/red_player.png" 'png/alpha #f)]
-         [powerbar (new powerbar% [sprite (make-object bitmap% "pics/kraft0.png" 'png/alpha #f)])]))
-  
-  (send *player* set-radius! (round (/ (send (send *player* get-sprite) get-height) 2)))
-  
-  
-  
-  
-  
-  
-  ;------------object-list-----------
-  
-  
-  
-  (define *object-list* (list *player* (send *player* get-powerbar)))
-  
-  
-  
-  
-  
-  
-  
-  
+                                               (send powerbar set-y! (- (get-y) (get-radius))))))))
+
+
+
+
+
+
+
+
+(define snowball%
+  (class on-screen%
+    (super-new)
+    (inherit set-x! get-x)
+    (init-field (speed 10) (duration 100) (counter 0)) ; speed is negative for snowballs thrown left
+    
+    ;---------------set-methods-----------------
+    (define/public (set-throw_param! new-speed new-duration) (begin (set! speed new-speed) 
+                                                                    (set! duration new-duration)))
+    
+    (define/public (set-power! power) (begin (set! speed power) 
+                                             (set! duration (abs power)))) ; likely to be modifyed
+    
+    ;---------------get-methods------------------
+    (define/public (get-speed) speed)
+    (define/public (get-duration) duration)
+    
+    ;---------------actions---------------------
+    (define/override (move) ; Returns #t when maximum duration is reached
+      (begin 
+        (if (and (> speed 0)(= 10 counter)) (begin (set! speed (- speed 1)) (set! counter 0)))
+        (if (and (< speed 0)(= 10 counter)) (begin (set! speed (+ speed 1)) (set! counter 0)))
+        (set! counter (+ counter 1))
+        (set-x! (+ (get-x) speed)) 
+        (set! duration (- duration 1)) (= duration 0)))))
+
+
+(define bunker%
+  (class on-screen%
+    (super-new)))
+        
+   
+
+(define weapon%
+  (class on-screen%
+    (super-new)))
+    
+    
+
+;----------instances-------------
+
+(define *player*
+  (new player% 
+       [sprite (make-object bitmap% "pics/red_player.png" 'png/alpha #f)]
+       [powerbar (new powerbar% [sprite (make-object bitmap% "pics/kraft0.png" 'png/alpha #f)])]))
+
+(send *player* set-radius! (round (/ (send (send *player* get-sprite) get-height) 2)))
+
+
+
+
+
+
+;------------object-list-----------
+
+
+
+(define *object-list* (list *player* (send *player* get-powerbar)))
+
+
+
+
+
+
+
