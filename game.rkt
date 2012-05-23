@@ -14,10 +14,14 @@
            (*update-loop* #f)
            (mouse-x 0)
            (mouse-y 0)
-           (background-image (make-object bitmap% "pics/background.png" 'png/alpha #f))
-           (startscreen (make-object bitmap% "pics/startscreen.png" 'png/alpha #f))
-           (red_playerweapon (make-object bitmap% "pics/red_playerweapon.png" 'png/alpha #f))
-           (blue_playerweapon (make-object bitmap% "pics/blue_playerweapon.png" 'png/alpha #f))
+           (background-image 
+            (make-object bitmap% "pics/background.png" 'png/alpha #f))
+           (startscreen 
+            (make-object bitmap% "pics/startscreen.png" 'png/alpha #f))
+           (red_playerweapon 
+            (make-object bitmap% "pics/red_playerweapon.png" 'png/alpha #f))
+           (blue_playerweapon 
+            (make-object bitmap% "pics/blue_playerweapon.png" 'png/alpha #f))
            (gui (new gui-interface%))
            (update-semaphore (make-semaphore 1))
            (network (new network-session%)))
@@ -63,7 +67,6 @@
       (semaphore-post *object-list-semaphore*))
     
     (define (update-player) 
-      
       (let* ((dir-v (directional-vector 
                      (send *player* get-x) (send *player* get-y) mouse-x mouse-y))
              (dir-x (car dir-v))
@@ -205,11 +208,11 @@
           (if (and (is-a? other-object player%) (occurs? other-object *object-list*)) ;does the weapon collide with a player? And is that player me?
               (begin (send *player* set-weapon! weapon) ;the player gets the weapon
                      (send *player* set-sprite! (if (= 1 (send *player* get-side)) 
-                                                    red_playerweapon
+                                                    red_playerweapon ;change sprite according to side
                                                     blue_playerweapon))
                      (if (occurs? weapon *object-list*) ;is the weapon in my object-list or does it come from the other players list? 
-                         (remove-weapon!)
-                         (send network weapon-is-taken!))))))
+                         (remove-weapon!)               ;remove the weapon
+                         (send network weapon-is-taken!)))))) ;or tell the other computer do to it
       
       (if (not (null? crashlist))
           (let ((first-object (car crashlist))) 
@@ -252,7 +255,7 @@
     
     (define/public (start-game)
       (send gui show-gui)
-      (send gui draw-pic startscreen 0 0))
+      (send gui draw-pic startscreen 0 0))))
     
 
 
