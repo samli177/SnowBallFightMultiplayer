@@ -3,6 +3,10 @@
 (load "init.rkt")
 (load "helpfunctions.rkt")
 
+;Commenting is in first hand read on the same line as code.
+;Otherwise above a use of "define" or if the comments are in 
+;the middle of a code, they will be found directly below the commented code.
+
 ;(require graphics/graphics) seems to work without it
 (define *object-list-semaphore* (make-semaphore 1))
 
