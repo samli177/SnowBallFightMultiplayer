@@ -150,11 +150,11 @@
                    [sprite weapon-sprite]
                    [x (+ (* side (+ (get-radius) 2)) (get-x))]
                    [y (get-y)]
-                   [speed (* side old-power)]))))
+                   [speed (* side old-power)])))))
       
       (define/public (update-powerbar!) (begin (if (not (eq? power (send powerbar get-power))) (send powerbar set-power! power))
                                                (send powerbar set-x! (get-x))
-                                               (send powerbar set-y! (- (get-y) (get-radius))))))))
+                                               (send powerbar set-y! (- (get-y) (get-radius)))))))
 
 
 
