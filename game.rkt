@@ -236,18 +236,20 @@
       (define (weaponcollission first-object second-object)
         (let*
             ((weapon (if (is-a? first-object weapon%) first-object second-object))
-             (other-object (if (eq? weapon first-object) second-object first-object)))
-          (if (and (is-a? other-object player%) (occurs? other-object *object-list*))
+             (other-object 
+              (if (eq? weapon first-object) second-object first-object)))
+          (if (and (is-a? other-object player%)
+                   (occurs? other-object *object-list*))
               ;does the weapon collide with a player? And is that player me?
               (begin (send *player* set-weapon! weapon) ;the player gets the weapon
                      (send *player* set-sprite! (if (= 1 (send *player* get-side)) 
-                                                    ;change sprite according to side
+                                                ;change sprite according to side
                                                     red_playerweapon 
                                                     blue_playerweapon))
                      (if (occurs? weapon *object-list*) 
-                         ;is the weapon in my object-list or does it come from the other players list? 
+  ;is the weapon in my object-list or does it come from the other players list? 
                          (remove-weapon!)              
-                         ;remove the weapon
+      ;remove the weapon
                          (send network weapon-is-taken!)))))) 
       ;or tell the other computer do to it
       
