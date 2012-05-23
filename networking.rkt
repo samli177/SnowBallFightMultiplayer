@@ -131,7 +131,7 @@
           (begin
             (set! player-sprite (make-object bitmap% "pics/blue_playerweapon.png" 'png/alpha #f))
             (set! player-radius (round (/ (send player-sprite get-height) 2)))))
-      (set! snowball-sprite (make-object bitmap% "pics/snowballe.png" 'png/alpha #f))
+      (set! snowball-sprite (make-object bitmap% "pics/weapon-projectile.png" 'png/alpha #f))
       (set! snowball-raduis (/ (send snowball-sprite get-height) 2)))
 
             
