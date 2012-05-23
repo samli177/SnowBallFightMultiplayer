@@ -14,8 +14,6 @@
            (*update-loop* #f)
            (mouse-x 0)
            (mouse-y 0)
-           (remote-player-sprite #f)
-           (remote-player-radius 0)
            (gui (new gui-interface%))
            (network (new network-session%)))
            
@@ -25,8 +23,8 @@
       (send *player* set-radius! (round (/ (send (send *player* get-sprite) get-height) 2))))
     
     (define/public (set-remote-player-sprite! pic-location)
-      (set! remote-player-sprite (make-object bitmap% pic-location 'png/alpha #f))
-      (set! remote-player-radius (round (/ (send remote-player-sprite get-height) 2))))
+      (send network set-player-sprite! pic-location))
+    
     
     ;---------------get-methods---------------
     

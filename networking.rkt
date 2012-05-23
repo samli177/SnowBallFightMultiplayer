@@ -9,6 +9,8 @@
    
     (field (inport null) ; Bound to tcp-port by listen/connect
            (outport null)
+           (player-sprite (make-object bitmap% "blue_player.png" 'png/alpha #f))
+           (player-radius 0)
            (remote-object-list '()) ; Contains the moast recent representation of the other players *object-list when networking in active.
            (change-check '()) ; Used to make sure that the string constucted from *object-list* is sent only once per update-loop.
            (syncflag-semaphore (make-semaphore 1)) 
@@ -142,9 +144,6 @@
     (define snowball-sprite (make-object bitmap% "snowballe.png" 'png/alpha #f))
     (define snowball-radius (/ (send snowball-sprite get-height) 2))
     
-    (define player-sprite (make-object bitmap% "blue_player.png" 'png/alpha #f))
-    (define player-radius (/ (send player-sprite get-height) 2))
-    
     (define bunker-sprite (make-object bitmap% "bunker.png" 'png/alpha #f))
     (define bunker-radius (/ (send bunker-sprite get-height) 2))
     
@@ -196,7 +195,11 @@
     (define/public (set-host! new-host) (set! host new-host))
     (define/public (set-sync! new-sync) (set! sync new-sync))
     
-    ;---------------------actions---------------------------
+    ;---------------------interface---------------------------¨
+    
+    (define/public (set-player-sprite! pic-location)
+      (set! player-sprite (make-object bitmap% pic-location 'png/alpha #f))
+      (set! player-radius (round (/ (send remote-player-sprite get-height) 2))))
     
     (define/public (send-string string)
       (semaphore-wait send-semaphore)
