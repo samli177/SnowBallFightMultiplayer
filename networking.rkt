@@ -136,21 +136,17 @@
             (else (msg-loop (cdr iter-lst)))))
         (msg-loop lst)))
     
-    
-    
-  
-    
-    
+
     
     ;-------------------command-table init---------------------
     (define snowball-sprite (make-object bitmap% "snowballe.png" 'png/alpha #f))
-    (define snowball-raduis (/ (send snowball-sprite get-width) 2))
+    (define snowball-raduis (/ (send snowball-sprite get-height) 2))
     
     (define bunker-sprite (make-object bitmap% "bunker.png" 'png/alpha #f))
-    (define bunker-raduis (/ (send bunker-sprite get-width) 2))
+    (define bunker-raduis (/ (send bunker-sprite get-height) 2))
     
     (define empty-powerbar (new powerbar% [sprite (make-object bitmap% "kraft0.png" 'png/alpha #f)]))
-    (define player-radius (/ (send (send new-game get-remote-player-sprite) get-width) 2))
+    (define player-radius (send new-game get-remote-player-radius))
     
     (define (remote-make-snowball . args)
       (new snowball% 
