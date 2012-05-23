@@ -16,6 +16,7 @@
            (mouse-y 0)
            (remote-player-sprite #f)
            (remote-player-radius 0)
+           (gui (new gui-interface%))
            (network (new network-session%)))
            
     ;--------------set-methods----------------
@@ -37,14 +38,14 @@
     
     
     (define (draw)
-      (clear)
+      (send gui clear)
       (draw-object-list *object-list*)
       (draw-object-list (send network get-remote-objects)) 
-      (show))
+      (send gui show))
     
     (define (draw-object-list object-list)
       (for-each (lambda (object)           ;iterates through a list with all the objects and draws the objects images on the objects coordinates
-                                (draw-pic (send object get-sprite)
+                                (send gui draw-pic (send object get-sprite)
                                           (- (send object get-x) (/ (send (send object get-sprite) get-width) 2)) 
                                           (- (send object get-y) (/ (send (send object get-sprite) get-height) 2))))
                 object-list))
@@ -162,9 +163,24 @@
     
       
     (define/public (start-game)
-      (show-gui *gui*)
-      (draw-text "welcome to snowballfight" 350 300 *black-pen* *green-brush*)
-      (draw-text "After you have either connected or started listening, press pray game!" 200 350 *black-pen* *green-brush*))))
+      (send gui show-gui)
+      (send gui draw-text "welcome to snowballfight" 350 300 (send gui get-pen) (send gui get-brush))
+      (send gui draw-text "After you have either connected or started listening, press pray game!" 200 350 (send gui get-pen) (send gui get-brush)))
+    
+    (define/public (bunkeradder number) ;adds bunkers in the quantity of "number" to the battle field
+      (let* ((sprite (make-object bitmap% "bunker.png" 'png/alpha #f))
+             (radius (/ (send sprite get-height) 2))
+             (generated-x (+ 300 (random 600)))
+             (generated-y (+ 100 (random 300))))
+        (if (= number 0) 
+            (void)
+            (begin (set! *object-list* (cons (new bunker%   
+                                                  [sprite sprite]   
+                                                  [radius radius]
+                                                  [x generated-x]
+                                                  [y generated-y])
+                                             *object-list*))
+                   (bunkeradder (- number 1))))))))
 
 
 
