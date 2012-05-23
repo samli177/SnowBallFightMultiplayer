@@ -144,13 +144,13 @@
                   (collisionhandler (cdr crashlist))))
         
       
-    
+    (define/public (remove-weapon!)
+      (display "weapon removed"))
       
       
     (define/public (update-mouse x y)
       (set! mouse-x x)
       (set! mouse-y y))
-    
     
     (define/public (exit-game)
       (hide-gui *gui*))
