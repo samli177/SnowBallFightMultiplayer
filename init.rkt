@@ -98,6 +98,7 @@
                 (speed 30)
                 (power 0)
                 (powerbar #f)
+                (weapon #f)
                 (snowball-sprite (make-object bitmap% "pics/snowballe.png" 'png/alpha #f))
                 (youlosepic (make-object bitmap% "pics/youlosepic.png" 'png/alpha #f)))
   
@@ -106,6 +107,7 @@
     (define/public (set-side! new-side) (set! side new-side))
     (define/public (set-speed! new-speed) (set! speed new-speed))
     (define/public (set-power! new-power) (set! power new-power))
+    (define/public (set-weapon! new-weapon) (set! weapon new-weapon))
   
     ;---------------get-methods------------------
     (define/public (get-hp) hp)
@@ -114,6 +116,7 @@
     (define/public (get-speed) speed)
     (define/public (get-power) power)
     (define/public (get-powerbar) powerbar)
+    (define/public (get-weapon) weapon)
   
     ;---------------actions----------------------
     (define/public (power-up!) (set! power (+ 1 power)))
