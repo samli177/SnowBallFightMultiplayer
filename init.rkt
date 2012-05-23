@@ -36,18 +36,18 @@
     (define/public (get-x) 
       (let ((temp 0))
         (begin
-        (semaphore-wait position-semaphore)
-        (set! temp x)
-        (semaphore-post position-semaphore)
-        temp)))
+          (semaphore-wait position-semaphore)
+          (set! temp x)
+          (semaphore-post position-semaphore)
+          temp)))
     
     (define/public (get-y) 
       (let ((temp 0))
         (begin
-        (semaphore-wait position-semaphore)
-        (set! temp y)
-        (semaphore-post position-semaphore)
-        temp)))
+          (semaphore-wait position-semaphore)
+          (set! temp y)
+          (semaphore-post position-semaphore)
+          temp)))
     
     (define/public (get-radius) radius)
     (define/public (get-sprite) sprite)
@@ -56,7 +56,7 @@
     ;--------------actions--------------------
     
     (define/public (move) #f)))
-    
+
 (define powerbar%
   (class on-screen%
     (inherit set-sprite!)
@@ -82,11 +82,11 @@
                                                    ((= power 15) (set-sprite! kraft3))
                                                    ((= power 20) (set-sprite! kraft4))
                                                    ((>= power 25) (set-sprite! kraft5)))))
-                                                   
+    
     ;--------------get-methods----------------
     (define/public (get-power) power)))
- 
-    
+
+
 
 
 (define player%
@@ -98,15 +98,18 @@
                 (speed 30)
                 (power 0)
                 (powerbar #f)
+                (weapon #f)
                 (snowball-sprite (make-object bitmap% "pics/snowballe.png" 'png/alpha #f))
+                (weapon-sprite (make-object bitmap% "pics/weapon-projectile.png" 'png/alpha #f))
                 (youlosepic (make-object bitmap% "pics/youlosepic.png" 'png/alpha #f)))
-  
+    
     ;---------------set-methods-------------------
     (define/public (set-hp! new-hp) (set! hp new-hp))
     (define/public (set-side! new-side) (set! side new-side))
     (define/public (set-speed! new-speed) (set! speed new-speed))
     (define/public (set-power! new-power) (set! power new-power))
-  
+    (define/public (set-weapon! new-weapon) (set! weapon new-weapon))
+    
     ;---------------get-methods------------------
     (define/public (get-hp) hp)
     (define/public (alive?) (not (= hp 0)))
@@ -114,37 +117,50 @@
     (define/public (get-speed) speed)
     (define/public (get-power) power)
     (define/public (get-powerbar) powerbar)
-  
+    (define/public (get-weapon) weapon)
+    
     ;---------------actions----------------------
     (define/public (power-up!) (set! power (+ 1 power)))
     (define/public (power-down!) (set! power 0))
-    (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (begin
-                                                            (semaphore-wait *object-list-semaphore*)
-                                                            (set! *object-list* (append *object-list* (list (new on-screen% 
-                                                                                                 [sprite youlosepic]
-                                                                                                 [x 400]
-                                                                                                 [y 300]))))
-                                                            (semaphore-post *object-list-semaphore*)
-                                                                  (sleep 0.1)
-                                                                  (send new-game stop-update))))
-    (define/public (throw) (let((old-power power))
-                             (begin
-                               (set! power 0)
-                               (new snowball% 
-                                    [sprite snowball-sprite]
-                                    [x (+ (* side (+ (get-radius) 2)) (get-x))]
-                                    [y (get-y)]
-                                    [speed (* side old-power)]))))
-    
-    (define/public (update-powerbar!) (begin (if (not (eq? power (send powerbar get-power))) (send powerbar set-power! power))
-                                             (send powerbar set-x! (get-x))
-                                             (send powerbar set-y! (- (get-y) (get-radius)))))))
+    (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) 
+                              (begin
+                                (semaphore-wait *object-list-semaphore*)
+                                (set! *object-list* (append *object-list* (list (new on-screen% 
+                                                                                     [sprite youlosepic]
+                                                                                     [x 400]
+                                                                                     [y 300]))))
+                                (semaphore-post *object-list-semaphore*)
+                                (sleep 0.1)
+                                (send new-game stop-update))))
+    (define/public (throw) 
+      (if (not weapon)           ;no weapon
+          (let((old-power power))
+            (begin
+              (set! power 0)
+              (new snowball% 
+                   [sprite snowball-sprite]
+                   [x (+ (* side (+ (get-radius) 2)) (get-x))]
+                   [y (get-y)]
+                   [speed (* side old-power)])))
+          
+          (let((old-power power)) ;with weapon
+            (begin
+              (set! power 5)
+              (new snowball% 
+                   [sprite weapon-sprite]
+                   [x (+ (* side (+ (get-radius) 2)) (get-x))]
+                   [y (get-y)]
+                   [speed (* side old-power)])))))
+      
+      (define/public (update-powerbar!) (begin (if (not (eq? power (send powerbar get-power))) (send powerbar set-power! power))
+                                               (send powerbar set-x! (get-x))
+                                               (send powerbar set-y! (- (get-y) (get-radius)))))))
 
-                                
-    
-    
 
-  
+
+
+
+
 
 
 (define snowball%
@@ -176,20 +192,15 @@
 
 (define bunker%
   (class on-screen%
-    ;(inherit get-x get-y get-radius)
-    (super-new)
-    (field (hp 100)) ; hitpoints
-  
-    ;---------------set-methods-------------------
-    (define/public (set-hp! new-hp) (set! hp new-hp))
-  
-    ;---------------get-methods------------------
-    (define/public (get-hp) hp)
-    (define/public (broken?) (not (= hp 0)))
-    ;---------------actions----------------------
-    (define/public (hit!) (if (> hp 0) (set! hp (- hp 1)) (stop-update)))))
-  
+    (super-new)))
+        
+   
 
+(define weapon%
+  (class on-screen%
+    (super-new)))
+    
+    
 
 ;----------instances-------------
 
