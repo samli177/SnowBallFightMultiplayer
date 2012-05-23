@@ -199,7 +199,7 @@
     
     (define/public (set-player-sprite! pic-location)
       (set! player-sprite (make-object bitmap% pic-location 'png/alpha #f))
-      (set! player-radius (round (/ (send remote-player-sprite get-height) 2))))
+      (set! player-radius (round (/ (send player-sprite get-height) 2))))
     
     (define/public (send-string string)
       (semaphore-wait send-semaphore)
