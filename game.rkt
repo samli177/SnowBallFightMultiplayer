@@ -197,7 +197,7 @@
                    (cond 
                      ((or (is-a? first-object snowball%) (is-a? second-object snowball%))
                       (snowballcollission first-object second-object))
-                     ((or (is-a? first-object weapon%) (is-a?second-object weapon%))
+                     ((or (is-a? first-object weapon%) (is-a? second-object weapon%))
                       (weaponcollision first-object second-object)))))
                (cdr crashlist)))             
             (collisionhandler (cdr crashlist))))
