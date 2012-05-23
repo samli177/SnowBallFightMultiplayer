@@ -177,14 +177,11 @@
               (begin (send *player* set-weapon! weapon) ;the player gets the weapon
                      (if (occurs? weapon *object-list*) ;is the weapon in my object-list or does it come from the other players list? 
                          (set! *object-list* (remove weapon *object-list*))
-<<<<<<< HEAD
-                          
-=======
                          (send network weapon-is-taken!))))))
 
 
       
->>>>>>> 526504c360f3a041f3640f92972ac5e212034e6c
+
       
       (if (not (null? crashlist))
           (let ((first-object (car crashlist))) 
