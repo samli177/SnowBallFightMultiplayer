@@ -26,7 +26,7 @@
            (update-semaphore (make-semaphore 1))
            (network (new network-session%)))
     
-    ;--------------set-methods----------------
+    ;--------------set-methods-------------------------------------------------
     (define/public (set-local-player-sprite! pic-location)
       (send *player* set-sprite! (make-object bitmap% pic-location 'png/alpha #f))
       (send *player* set-radius! 
@@ -36,7 +36,7 @@
       (send network set-player-sprite! pic-location))
     
     
-    ;---------------get-methods---------------
+    ;---------------get-methods-------------------------------------------------
     
     (define/public (get-remote-player-sprite) remote-player-sprite)
     (define/public (get-remote-player-radius) remote-player-radius)
@@ -44,7 +44,7 @@
     (define/public (get-height) HEIGHT)
     (define/public (get-network) network)
     
-    ;--------------update functions---------
+    ;--------------update functions---------------------------------------------
     
     (define (update)
       (semaphore-wait update-semaphore)
@@ -111,9 +111,9 @@
               (update-player-y!)))))
     
     
-    ;-------functions to add items to the game------------
+    ;-------functions to add items to the game----------------------------------
     
-    (define/public (bunkeradder number) ;adds bunkers in the quantity of "number" to the battle field
+    (define/public (bunkeradder number) ;adds bunkers to the battle field
       (let* ((sprite (make-object bitmap% "pics/bunker.png" 'png/alpha #f))
              (radius (/ (send sprite get-height) 2))
              (generated-x (+ 300 (random 600)))
@@ -153,12 +153,15 @@
       (send gui show))
     
     (define (draw-object-list object-list)
-      (for-each (lambda (object)           ;iterates through a list with all the objects and draws the objects images on the objects coordinates
+      (for-each (lambda (object)           
                   (send gui draw-pic (send object get-sprite)
-                        (- (send object get-x) (/ (send (send object get-sprite) get-width) 2)) 
-                        (- (send object get-y) (/ (send (send object get-sprite) get-height) 2))))
+                        (- (send object get-x) 
+                           (/ (send (send object get-sprite) get-width) 2)) 
+                        (- (send object get-y) 
+                           (/ (send (send object get-sprite) get-height) 2))))
                 object-list))
-    
+    ;iterates through a list with all the objects and draws the objects images
+    ;on the objects coordinates
     
     
     
@@ -171,58 +174,85 @@
     (define/public (win!)
       (set! *object-list* 
             (append *object-list* 
-                    (list (new on-screen% 
-                               [sprite (make-object bitmap% "pics/youwinpic.png" 'png/alpha #f)]
-                               [x 400]
-                               [y 300])))))
+                    (list 
+                     (new on-screen% 
+                          [sprite 
+                           (make-object bitmap% 
+                             "pics/youwinpic.png" 'png/alpha #f)]
+                          [x 400]
+                          [y 300])))))
     
-    ;-----------Function to handle collissions----------
+    ;-----------Function to handle collissions----------------------------------
     
     (define (collisionhandler crashlist)
       
       (define (snowballcollission first-object second-object)
         (let*
-            ((snowball (if (is-a? first-object snowball%) first-object second-object))
-             (other-object (if (eq? snowball first-object) second-object first-object)))
-          (if (occurs? snowball *object-list*)                ;is the snowball my snowball?
+            ((snowball (if 
+                        (is-a? first-object snowball%)
+                        first-object 
+                        second-object))
+             (other-object (if 
+                            (eq? snowball first-object)
+                               second-object 
+                               first-object)))
+          (if (occurs? snowball *object-list*) ;is the snowball my snowball?
               (cond
-                ((and (is-a? other-object player%)            ;does my snowball hit a player?
-                      (not (eq? other-object *player*)))      ;does my snowball hit the opponent or me? Nothing will happen if I hit myself.
+                ((and (is-a? other-object player%)           
+                      ;does my snowball hit a player?
+                      
+                      (not (eq? other-object *player*)))     
+                 ;does my snowball hit the opponent or me? 
+                 ;Nothing will happen if I hit myself.
+                 
                  (begin (send network hit!)
                         (semaphore-wait *object-list-semaphore*)
                         (set! *object-list* (remove snowball *object-list* eq?))
-                        (semaphore-post *object-list-semaphore*))) ;if so, remove the snowball
-                ((is-a? other-object bunker%) (begin
-                                                (semaphore-wait *object-list-semaphore*)
-                                                (set! *object-list* (remove snowball *object-list* eq?))
-                                                (semaphore-post *object-list-semaphore*))) ;if you hit a bunker, remove the snowball
-                ((is-a? other-object snowball%) (begin
-                                                  (semaphore-wait *object-list-semaphore*)
-                                                  (set! *object-list* (remove snowball *object-list* eq?))
-                                                  (semaphore-post *object-list-semaphore*))))))) ;if you hit another snowball, remove the snowball
+                        (semaphore-post *object-list-semaphore*))) 
+                ;if so, remove the snowball
+                ((is-a? other-object bunker%) 
+                 (begin
+                   (semaphore-wait *object-list-semaphore*)
+                   (set! *object-list* (remove snowball *object-list* eq?))
+                   (semaphore-post *object-list-semaphore*)))
+                ;if you hit a bunker, remove the snowball
+                ((is-a? other-object snowball%)
+                 (begin
+                   (semaphore-wait *object-list-semaphore*)
+                   (set! *object-list* (remove snowball *object-list* eq?))
+                   (semaphore-post *object-list-semaphore*))))))) 
+      ;if you hit another snowball, remove the snowball
       
       (define (weaponcollission first-object second-object)
         (let*
             ((weapon (if (is-a? first-object weapon%) first-object second-object))
              (other-object (if (eq? weapon first-object) second-object first-object)))
-          (if (and (is-a? other-object player%) (occurs? other-object *object-list*)) ;does the weapon collide with a player? And is that player me?
+          (if (and (is-a? other-object player%) (occurs? other-object *object-list*))
+              ;does the weapon collide with a player? And is that player me?
               (begin (send *player* set-weapon! weapon) ;the player gets the weapon
                      (send *player* set-sprite! (if (= 1 (send *player* get-side)) 
-                                                    red_playerweapon ;change sprite according to side
+                                                    ;change sprite according to side
+                                                    red_playerweapon 
                                                     blue_playerweapon))
-                     (if (occurs? weapon *object-list*) ;is the weapon in my object-list or does it come from the other players list? 
-                         (remove-weapon!)               ;remove the weapon
-                         (send network weapon-is-taken!)))))) ;or tell the other computer do to it
+                     (if (occurs? weapon *object-list*) 
+                         ;is the weapon in my object-list or does it come from the other players list? 
+                         (remove-weapon!)              
+                         ;remove the weapon
+                         (send network weapon-is-taken!)))))) 
+      ;or tell the other computer do to it
       
       (if (not (null? crashlist))
           (let ((first-object (car crashlist))) 
             (for-each  
              (lambda (second-object) 
-               (if (collision? first-object second-object) ;will the two objects collide?
+               (if (collision? first-object second-object) 
+                   ;will the two objects collide?
                    (cond 
-                     ((or (is-a? first-object snowball%) (is-a? second-object snowball%))
+                     ((or (is-a? first-object snowball%)
+                          (is-a? second-object snowball%))
                       (snowballcollission first-object second-object))
-                     ((or (is-a? first-object weapon%) (is-a? second-object weapon%))
+                     ((or (is-a? first-object weapon%) 
+                          (is-a? second-object weapon%))
                       (weaponcollission first-object second-object)))))
              (cdr crashlist)))             
           (collisionhandler (cdr crashlist))))
@@ -234,7 +264,7 @@
           (set! *object-list* (cdr *object-list*))
           (set! *object-list* (remove weapon% *object-list* is-a?)))
       (semaphore-post *object-list-semaphore*))
-    ;remove can ommits the car in a list, hence the if
+    ;remove can ommits the car in a list, hence the if 
     
     (define/public (update-mouse x y)
       (set! mouse-x x)
@@ -257,11 +287,6 @@
       (send gui show-gui)
       (send gui draw-pic startscreen 0 0))))
     
-
-
-
-
-
 
 
 
