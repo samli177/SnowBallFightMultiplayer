@@ -21,7 +21,8 @@
     ;--------------set-methods----------------
     (define/public (set-local-player-sprite! pic-location)
       (send *player* set-sprite! (make-object bitmap% pic-location 'png/alpha #f))
-      (send *player* set-radius! (round (/ (send (send *player* get-sprite) get-height) 2))))
+      (send *player* set-radius! 
+            (round (/ (send (send *player* get-sprite) get-height) 2))))
     
     (define/public (set-remote-player-sprite! pic-location)
       (send network set-player-sprite! pic-location))
@@ -46,39 +47,54 @@
       (semaphore-post update-semaphore))
     
     (define (update-snowballs)
-      (define templist (cons (car *object-list*) (cdr *object-list*))) ;; creates new list with the same elements as *object-list*
-      (for-each (lambda (object) (if (send object move) (set! templist (remove object templist eq?)))) *object-list*)
+      (define templist (cons (car *object-list*) (cdr *object-list*)))
+      ;; creates new list with the same elements as *object-list*
+      
+      (for-each (lambda (object) 
+                  (if (send object move) 
+                      (set! templist (remove object templist eq?)))) 
+                *object-list*)
       (semaphore-wait *object-list-semaphore*)
       (set! *object-list* templist)
       (semaphore-post *object-list-semaphore*))
     
     (define (update-player) 
       
-      (let* ((dir-v (directional-vector (send *player* get-x) (send *player* get-y) mouse-x mouse-y))
+      (let* ((dir-v (directional-vector 
+                     (send *player* get-x) (send *player* get-y) mouse-x mouse-y))
              (dir-x (car dir-v))
              (dir-y (cdr dir-v))
              (delta-x (round (* (send *player* get-speed) dir-x)))
              (delta-y (round (* (send *player* get-speed) dir-y))))
         
         (define (update-player-x!)
-          (if (>= (abs (- (send *player* get-x) mouse-x)) (send *player* get-speed)) 
+          (if (>= (abs (- (send *player* get-x) mouse-x)) 
+                  (send *player* get-speed)) 
               (send *player* set-x! (+ (send *player* get-x) delta-x))
-              (send *player* set-x! mouse-x))) ; To avoid oscillation around mouse possition
+              (send *player* set-x! mouse-x))) 
+        ;To avoid oscillation around mouse position
         
         (define (update-player-y!)
-          (if (>= (abs (- (send *player* get-y) mouse-y)) (send *player* get-speed)) 
+          (if (>= (abs (- (send *player* get-y) mouse-y))
+                  (send *player* get-speed)) 
               (send *player* set-y! (+ (send *player* get-y) delta-y))
               (send *player* set-y! mouse-y)))
         
         (define (can-go-there? x y)
           (let ((result #t)
                 (remote-objects (send network get-remote-objects))
-                (moved-player (new player% [x (+ (send *player* get-x) x)] [y (+ (send *player* get-y) y)] [radius (send *player* get-radius)])))
+                (moved-player (new player% 
+                                   [x (+ (send *player* get-x) x)]
+                                   [y (+ (send *player* get-y) y)] 
+                                   [radius (send *player* get-radius)])))
             (begin 
               (for-each (lambda (object)
-                          (if (not (or (is-a? object powerbar%) (eq? object *player*) (is-a? object weapon%)))
+                          (if (not (or (is-a? object powerbar%)
+                                       (eq? object *player*) 
+                                       (is-a? object weapon%)))
                               (if (collision? object moved-player)
-                                  (set! result #f)))) (append *object-list* remote-objects))
+                                  (set! result #f)))) 
+                        (append *object-list* remote-objects))
               result)))
         
         (send *player* update-powerbar!)
