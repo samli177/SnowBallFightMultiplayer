@@ -175,13 +175,12 @@
              (other-object (if (eq? weapon first-object) second-object first-object)))
           (if (and (is-a? other-object player%) (occurs? other-object *object-list*)) ;does the weapon collide with a player? And is that player me?
               (begin (send *player* set-weapon! weapon) ;the player gets the weapon
+                     (send *player* set-sprite! (if (= 1 (send *player* get-side)) 
+                                                    (make-object bitmap% "pics/red_playerweapon.png" 'png/alpha #f)
+                                                    (make-object bitmap% "pics/blue_playerweapon.png" 'png/alpha #f)))
                      (if (occurs? weapon *object-list*) ;is the weapon in my object-list or does it come from the other players list? 
                          (set! *object-list* (remove weapon *object-list*))
                          (send network weapon-is-taken!))))))
-      
-      
-      
-      
       
       (if (not (null? crashlist))
           (let ((first-object (car crashlist))) 
