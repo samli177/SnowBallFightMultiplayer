@@ -164,5 +164,5 @@
 
 
 
-(define new-game (new Game%))
+
 (send new-game start-game)
