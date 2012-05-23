@@ -56,7 +56,8 @@
                     (send new-game set-local-player-sprite! "pics/red_player.png")
                     (send new-game set-remote-player-sprite! "pics/blue_player.png")
                     (send *player* set-xy! 60 300)     ;coordinates for spawning
-                    (send (send new-game get-network) listen)))))
+                    (send (send new-game get-network) listen)
+                    (send new-game start-update)))))
     
     (instantiate menu-item%  ;adds the choise "connect" to the menu-buttons list
       ("Connect" menu 
@@ -72,7 +73,8 @@ want on the battle field" "Type a number and press ok or enter")))
                      (send *player* set-side! -1)    ;throw balls to the left
                      (send (send new-game get-network) set-host! 
                            (get-text-from-user "Connect" "Enter target IP:"))
-                     (send (send new-game get-network) connect)))))
+                     (send (send new-game get-network) connect)
+                     (send new-game start-update)))))
     
     (instantiate menu-item%;adds the choise "Pray Game" to the menu-buttons list
       ("Pray Game" menu (lambda (a b) (send new-game start-update))))
