@@ -151,7 +151,7 @@
              (msg-loop (cdr iter-lst)))
              ((is-a? (car iter-lst) weapon%)
              (set! str (string-append str 
-                                      " make-bunker " 
+                                      " make-weapon-box " 
                                       (number->string 
                                        (send (car iter-lst) get-x)) " "
                                       (number->string 
