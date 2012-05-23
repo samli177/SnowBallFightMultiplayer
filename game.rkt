@@ -14,6 +14,7 @@
            (*update-loop* #f)
            (mouse-x 0)
            (mouse-y 0)
+           (background-pic (make-object bitmap% "pics/background.png" 'png/alpha #f))
            (gui (new gui-interface%))
            (update-semaphore (make-semaphore 1))
            (network (new network-session%)))
@@ -38,6 +39,7 @@
     
     (define (draw)
       (send gui clear)
+      (send gui draw-pic background-pic 0 0)
       (draw-object-list *object-list*)
       (draw-object-list (send network get-remote-objects)) 
       (send gui show))
