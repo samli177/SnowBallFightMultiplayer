@@ -77,8 +77,11 @@
         (define (new-temp wordlist) ; creates new temporary remote-object-list 
           (if (null? wordlist) (void)
               (begin (set! temp-object-list 
-                           (cons (apply (get 'remote-commands (string->symbol (car wordlist))) 
-                                        (cons (cadr wordlist) (cons (caddr wordlist) '())))
+                           (cons (apply 
+                                  (get 'remote-commands 
+                                       (string->symbol (car wordlist))) 
+                                  (cons (cadr wordlist) 
+                                        (cons (caddr wordlist) '())))
                                  temp-object-list))
                      (new-temp (cdddr wordlist)))))
         (new-temp word-list)
@@ -92,7 +95,8 @@
         (semaphore-wait *object-list-semaphore*) 
         (set! temp-object-list *object-list*)
         (semaphore-post *object-list-semaphore*)
-        (for-each (lambda (object) (if (is-a? object player%) (send object hit!))) temp-object-list)))
+        (for-each (lambda (object) (if (is-a? object player%) 
+                                       (send object hit!))) temp-object-list)))
     
     ; Converts string to list of "wordstrings" ex. "Hello World!" -> '("Hello" "World")
     ; (not fully generalised)
@@ -102,9 +106,12 @@
           (begin
             (set! current-word (first-word (string->list str)))
             (cond
-              ((= (string-length current-word) (string-length str)) (cons  current-word '()))
+              ((= (string-length current-word) (string-length str)) 
+               (cons  current-word '()))
               ((equal? current-word "") '())
-              (else (cons current-word (st->w (substring str (+ 1 (string-length current-word)))))))))
+              (else (cons current-word 
+                          (st->w (substring str 
+                                            (+ 1 (string-length current-word)))))))))
         (st->w string)))
     
     (define (first-word charlist)
@@ -120,20 +127,26 @@
             ((null? iter-lst) (substring str 1))
             ((is-a? (car iter-lst) snowball%)
              (set! str (string-append str " make-snowball "  
-                                      (number->string (send (car iter-lst) get-x)) " "
-                                      (number->string (send (car iter-lst) get-y))))
+                                      (number->string 
+                                       (send (car iter-lst) get-x)) " "
+                                      (number->string 
+                                       (send (car iter-lst) get-y))))
              (msg-loop (cdr iter-lst)))
             ((is-a? (car iter-lst) player%)
              (set! str (string-append str 
                                       " make-player " 
-                                      (number->string (send (car iter-lst) get-x)) " "
-                                      (number->string (send (car iter-lst) get-y))))
+                                      (number->string 
+                                       (send (car iter-lst) get-x)) " "
+                                      (number->string 
+                                       (send (car iter-lst) get-y))))
              (msg-loop (cdr iter-lst)))
             ((is-a? (car iter-lst) bunker%)
              (set! str (string-append str 
                                       " make-bunker " 
-                                      (number->string (send (car iter-lst) get-x)) " "
-                                      (number->string (send (car iter-lst) get-y))))
+                                      (number->string 
+                                       (send (car iter-lst) get-x)) " "
+                                      (number->string 
+                                       (send (car iter-lst) get-y))))
              (msg-loop (cdr iter-lst)))
             (else (msg-loop (cdr iter-lst)))))
         (msg-loop lst)))
@@ -141,13 +154,20 @@
 
     
     ;-------------------command-table init---------------------
-    (define snowball-sprite (make-object bitmap% "pics/snowballe.png" 'png/alpha #f))
-    (define snowball-radius (/ (send snowball-sprite get-height) 2))
+    (define snowball-sprite 
+      (make-object bitmap% "pics/snowballe.png" 'png/alpha #f))
     
-    (define bunker-sprite (make-object bitmap% "pics/bunker.png" 'png/alpha #f))
+    (define snowball-radius 
+      (/ (send snowball-sprite get-height) 2))
+    
+    (define bunker-sprite 
+      (make-object bitmap% "pics/bunker.png" 'png/alpha #f))
+    
     (define bunker-radius (/ (send bunker-sprite get-height) 2))
     
-    (define empty-powerbar (new powerbar% [sprite (make-object bitmap% "pics/kraft0.png" 'png/alpha #f)]))
+    (define empty-powerbar 
+      (new powerbar% 
+           [sprite (make-object bitmap% "pics/kraft0.png" 'png/alpha #f)]))
     
     (define (remote-make-snowball . args)
       (new snowball% 
@@ -181,12 +201,13 @@
     
     (define/public (get-host) host)
     
-    (define/public (get-remote-objects) (let ((temp-list '()))
-                                          (begin
-                                          (semaphore-wait remote-object-list-semaphore)
-                                          (set! temp-list remote-object-list)
-                                          (semaphore-post remote-object-list-semaphore)
-                                          temp-list)))
+    (define/public (get-remote-objects) 
+      (let ((temp-list '()))
+        (begin
+          (semaphore-wait remote-object-list-semaphore)
+          (set! temp-list remote-object-list)
+          (semaphore-post remote-object-list-semaphore)
+          temp-list)))
     
     (define/public (sync-check) sync)
     
