@@ -144,7 +144,7 @@
              (length (sqrt (+ (sqr x) (sqr y)))))
         (if (= length 0) (cons 0 0) (cons (/ x length) (/ y length)))))
     
-;-----------Function to handle collissions----------
+    ;-----------Function to handle collissions----------
     
     (define (collisionhandler crashlist)
       
@@ -178,10 +178,10 @@
                      (if (occurs? weapon *object-list*) ;is the weapon in my object-list or does it come from the other players list? 
                          (set! *object-list* (remove weapon *object-list*))
                          (send network weapon-is-taken!))))))
-
-
       
-
+      
+      
+      
       
       (if (not (null? crashlist))
           (let ((first-object (car crashlist))) 
@@ -193,8 +193,8 @@
                       (snowballcollission first-object second-object))
                      ((or (is-a? first-object weapon%) (is-a? second-object weapon%))
                       (weaponcollission first-object second-object)))))
-               (cdr crashlist)))             
-            (collisionhandler (cdr crashlist))))
+             (cdr crashlist)))             
+          (collisionhandler (cdr crashlist))))
     
     
     (define/public (remove-weapon!)
@@ -222,15 +222,15 @@
       (send gui show-gui)
       (send gui draw-text "welcome to snowballfight" 350 300 (send gui get-pen) (send gui get-brush))
       (send gui draw-text "After you have either connected or started listening, press pray game!" 200 350 (send gui get-pen) (send gui get-brush)))))
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    (define new-game (new Game%))
-    (send new-game start-game)
-    
+
+
+
+
+
+
+
+
+
+(define new-game (new Game%))
+(send new-game start-game)
+
