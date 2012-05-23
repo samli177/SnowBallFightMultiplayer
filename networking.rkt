@@ -70,6 +70,7 @@
       (cond 
         ((eq? (string->symbol (car wordlst)) 'hit) (hit-player!)) ; could possibly be the cause of data-corruption?
         ((eq? (string->symbol (car wordlst)) 'weapon-taken!) (send new-game remove-weapon!))
+        ((eq? (string->symbol (car wordlst)) 'you-win) (send new-game win!)) 
         (else (update-remote-objectlist wordlst))))
     
     ; Decodes information in message-string to construct a list approximating the other computers *object-list* and updates remote-object-list.
@@ -176,7 +177,7 @@
     
     
     (define weapon-box-sprite 
-      (make-object bitmap% "pics/weapon-box.png" 'png/alpha #f))
+      (make-object bitmap% "pics/weaponbox.png" 'png/alpha #f))
     
     (define weapon-box-radius (/ (send weapon-box-sprite get-height) 2))
     
