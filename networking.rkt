@@ -146,7 +146,6 @@
     (define bunker-raduis (/ (send bunker-sprite get-height) 2))
     
     (define empty-powerbar (new powerbar% [sprite (make-object bitmap% "kraft0.png" 'png/alpha #f)]))
-    (define player-radius (send new-game get-remote-player-radius))
     
     (define (remote-make-snowball . args)
       (new snowball% 
@@ -158,7 +157,7 @@
     (define (remote-make-player . args)
       (new player% 
            [sprite (send new-game get-remote-player-sprite)]
-           [radius player-raduis]
+           [radius (send new-game get-remote-player-radius)]
            [powerbar empty-powerbar]
            [x (string->number (car args))]
            [y (string->number (cadr args))]))
