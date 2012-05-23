@@ -14,7 +14,6 @@
            (*update-loop* #f)
            (mouse-x 0)
            (mouse-y 0)
-           (background-pic (make-object bitmap% "pics/background.png" 'png/alpha #f))
            (gui (new gui-interface%))
            (update-semaphore (make-semaphore 1))
            (network (new network-session%)))
@@ -39,7 +38,6 @@
     
     (define (draw)
       (send gui clear)
-      (send gui draw-pic background-pic 0 0)
       (draw-object-list *object-list*)
       (draw-object-list (send network get-remote-objects)) 
       (send gui show))
@@ -197,7 +195,25 @@
                                                   [x generated-x]
                                                   [y generated-y])
                                              *object-list*))
-                   (bunkeradder (- number 1))))))))
+                   (bunkeradder (- number 1))))))
+      
+      (define/public (weaponadder number)
+        (let* ((sprite (make-object bitmap% "pics/weaponbox.png" 'png/alpha #f))
+               (radius (send sprite get-height))
+               (generated-x (+ 300 (random 600)))
+               (generated-y (+ 100 (random 300))))
+          (if (= number 0)
+              (void)
+              (begin (set! *object-list* (cons (new weapon%
+                                                    [sprite sprite]
+                                                    [radius radius]
+                                                    [x generated-x]
+                                                    [x generated-y])
+                                               *object-list*))
+                     (weaponadder (- number 1))))))))
+               
+        
+      
 
 
 
