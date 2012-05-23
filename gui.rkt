@@ -117,8 +117,7 @@ want on the battle field" "Type a number and press ok or enter")))
              (set! *object-list* (cons (send *player* throw) *object-list*))
              ;A snowball is thrown
             
-             (semaphore-post *object-list-semaphore*)
-             (send *player* power-down!)))    ;The players power returns to zero
+             (semaphore-post *object-list-semaphore*)))
           ((right-down)
            (background (random 255) (random 255) (random 255)))
           ((motion)
