@@ -142,6 +142,9 @@
     (define snowball-sprite (make-object bitmap% "snowballe.png" 'png/alpha #f))
     (define snowball-radius (/ (send snowball-sprite get-height) 2))
     
+    (define player-sprite (make-object bitmap% "blue-player.png" 'png/alpha #f))
+    (define player-radius (/ (send player-sprite get-height) 2))
+    
     (define bunker-sprite (make-object bitmap% "bunker.png" 'png/alpha #f))
     (define bunker-radius (/ (send bunker-sprite get-height) 2))
     
@@ -156,8 +159,8 @@
     
     (define (remote-make-player . args)
       (new player% 
-           [sprite (send new-game get-remote-player-sprite)]
-           [radius (send new-game get-remote-player-radius)]
+           [sprite player-sprite]
+           [radius player-radius]
            [powerbar empty-powerbar]
            [x (string->number (car args))]
            [y (string->number (cadr args))]))
