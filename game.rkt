@@ -30,6 +30,7 @@
     ;---------------get-methods---------------
     
     (define/public (get-remote-player-sprite) remote-player-sprite)
+    (define/public (get-remote-player-radius) remote-player-radius)
     (define/public (get-width) WIDTH)
     (define/public (get-height) HEIGHT)
     (define/public (get-network) network)
