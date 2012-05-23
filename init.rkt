@@ -65,12 +65,12 @@
     
     ;--------------objects-images-------------
     
-    (define kraft0 (make-object bitmap% "kraft0.png" 'png/alpha #f))
-    (define kraft1 (make-object bitmap% "kraft1.png" 'png/alpha #f))
-    (define kraft2 (make-object bitmap% "kraft2.png" 'png/alpha #f))
-    (define kraft3 (make-object bitmap% "kraft3.png" 'png/alpha #f))
-    (define kraft4 (make-object bitmap% "kraft4.png" 'png/alpha #f))
-    (define kraft5 (make-object bitmap% "kraft5.png" 'png/alpha #f))
+    (define kraft0 (make-object bitmap% "pics/kraft0.png" 'png/alpha #f))
+    (define kraft1 (make-object bitmap% "pics/kraft1.png" 'png/alpha #f))
+    (define kraft2 (make-object bitmap% "pics/kraft2.png" 'png/alpha #f))
+    (define kraft3 (make-object bitmap% "pics/kraft3.png" 'png/alpha #f))
+    (define kraft4 (make-object bitmap% "pics/kraft4.png" 'png/alpha #f))
+    (define kraft5 (make-object bitmap% "pics/kraft5.png" 'png/alpha #f))
     
     
     ;--------------set-methods----------------
@@ -98,8 +98,8 @@
                 (speed 30)
                 (power 0)
                 (powerbar #f)
-                (snowball-sprite (make-object bitmap% "snowballe.png" 'png/alpha #f))
-                (youlosepic (make-object bitmap% "youlosepic.png" 'png/alpha #f)))
+                (snowball-sprite (make-object bitmap% "pics/snowballe.png" 'png/alpha #f))
+                (youlosepic (make-object bitmap% "pics/youlosepic.png" 'png/alpha #f)))
   
     ;---------------set-methods-------------------
     (define/public (set-hp! new-hp) (set! hp new-hp))
@@ -195,8 +195,8 @@
 
 (define *player*
   (new player% 
-       [sprite (make-object bitmap% "red_player.png" 'png/alpha #f)]
-       [powerbar (new powerbar% [sprite (make-object bitmap% "kraft0.png" 'png/alpha #f)])]))
+       [sprite (make-object bitmap% "pics/red_player.png" 'png/alpha #f)]
+       [powerbar (new powerbar% [sprite (make-object bitmap% "pics/kraft0.png" 'png/alpha #f)])]))
 
 (send *player* set-radius! (round (/ (send (send *player* get-sprite) get-height) 2)))
 
