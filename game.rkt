@@ -129,15 +129,29 @@
                                                 (semaphore-wait *object-list-semaphore*)
                                                 (set! *object-list* (remove snowball *object-list* eq?))
                                                 (semaphore-post *object-list-semaphore*))))))) ;if you hit another snowball, remove the snowball
-          
+      
+      (define (weaponcollission first-object second-object)
+        (let*
+            ((weapon (if (is-a? first-object weapon%) first-object second-object))
+             (other-object (if (eq? weapon first-object) second-object first-object)))
+          (if (and (is-a? other-object player%) (occurs? other-object *object-list*)) ;does the weapon collide with a player? And is that player me?
+              (begin (send *player* set-weapon! weapon) ;the player gets the weapon
+                     (if (occurs? weapon *object-list*) ;is the weapon in my object-list or does it come from the other players list? 
+                         (set! *object-list* remove weapon *object-list*)
+                         (send network weapon-is-taken!))))))
+                     
+                
         
               (if (not (null? crashlist))
                   (let ((first-object (car crashlist))) 
                     (for-each  
                      (lambda (second-object) 
-                       (if (collision? first-object second-object) ;will the two objects collide
-                           (if (or (is-a? first-object snowball%) (is-a? second-object snowball%))
-                               (snowballcollission first-object second-object))))
+                       (if (collision? first-object second-object) ;will the two objects collide?
+                           (cond 
+                             ((or (is-a? first-object snowball%) (is-a? second-object snowball%))
+                              (snowballcollission first-object second-object))
+                             ((or (is-a? first-object weapon%) (is-a?second-object weapon%))
+                              (weaponcollision first-object second-object))))
                      (cdr crashlist)))             
                   (collisionhandler (cdr crashlist))))
         
