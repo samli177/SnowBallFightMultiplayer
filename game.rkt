@@ -100,7 +100,7 @@
       
     
     
-    (define/public (collisionhandler crashlist)
+    (define (collisionhandler crashlist)
       
       (define (snowballcollission first-object second-object)
         (let*
