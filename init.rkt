@@ -101,8 +101,7 @@
                 (weapon #f)
                 (snowball-sprite (make-object bitmap% "pics/snowballe.png" 'png/alpha #f))
                 (weapon-sprite (make-object bitmap% "pics/weapon-projectile.png" 'png/alpha #f))
-                (youlosepic (make-object bitmap% "pics/youlosepic.png" 'png/alpha #f))
-                (youwinpic (make-objecet bitmap% "pics/youwinpic.png" 'png/alpha #f)))
+                (youlosepic (make-object bitmap% "pics/youlosepic.png" 'png/alpha #f)))
     
     ;---------------set-methods-------------------
     (define/public (set-hp! new-hp) (set! hp new-hp))

@@ -166,7 +166,7 @@
       (set! *object-list* 
             (append *object-list* 
                     (list (new on-screen% 
-                               [sprite youwinpic]
+                               [sprite (make-object bitmap% "pics/youlosepic.png" 'png/alpha #f)]
                                [x 400]
                                [y 300])))))
     
