@@ -75,10 +75,7 @@ want on the battle field" "Type a number and press ok or enter")))
                            (get-text-from-user "Connect" "Enter target IP:"))
                      (send (send new-game get-network) connect)
                      (send new-game start-update)
-                     (new timer% 
-                          [notify-callback (send new-game weaponadder)]
-                          [interval (* 1000 (random 30))]
-                          [just-once? #t])))))
+                     (thread (send new-game weaponadder))))))
     
     (instantiate menu-item%;adds the choise "Pray Game" to the menu-buttons list
       ("Pray Game" menu (lambda (a b) (send new-game start-update))))
