@@ -69,7 +69,7 @@
                      (new timer% 
                           [notify-callback (send new-game weaponadder)]
                           [interval (* 1000 (random 30))]
-                          [just-once #t])
+                          [just-once? #t])
                      (send new-game bunkeradder 
                            (string->number (get-text-from-user 
                                             "Please enter how many bunkers you 
