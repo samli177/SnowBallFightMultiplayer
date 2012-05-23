@@ -199,9 +199,9 @@
 
 (send *player* set-radius! (round (/ (send (send *player* get-sprite) get-height) 2)))
 
-(define new-game (new Game%))
 
-(define *network* (new network-session%))
+
+
 
 
 ;------------object-list-----------

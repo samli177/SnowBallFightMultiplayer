@@ -160,7 +160,7 @@
                                    (send new-game set-local-player-sprite! "red_player.png")
                                    (send new-game set-remote-player-sprite! "blue_player.png")
                                    (send *player* set-xy! 60 300) ;coordinates for spawning
-                                   (send *network* listen)))))
+                                   (send (send new-game get-network) listen)))))
 
 (instantiate menu-item%
   ("Connect" *menu* (lambda (a b) (begin
@@ -169,8 +169,8 @@
                                     (send *player* set-xy! 1140 300) ;coordinates for spawning
                                     (bunkeradder (string->number (get-text-from-user "Please enter how many bunkers you want on the battle field" "Type a number and press ok or enter")))
                                     (send *player* set-side! -1)    ;throw balls to the left
-                                    (send *network* set-host! (get-text-from-user "Connect" "Enter target IP:"))
-                                    (send *network* connect)))))
+                                    (send (send new-game get-network) set-host! (get-text-from-user "Connect" "Enter target IP:"))
+                                    (send (send new-game get-network) connect)))))
 
 (instantiate menu-item%
   ("Pray Game" *menu* (lambda (a b) (send new-game start-update))))

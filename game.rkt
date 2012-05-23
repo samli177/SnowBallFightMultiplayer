@@ -14,27 +14,31 @@
            (*update-loop* #f)
            (mouse-x 0)
            (mouse-y 0)
-           (remote-player-sprite #f))
+           (remote-player-sprite #f)
+           (remote-player-radius 0)
+           (network (new network-session%)))
+           
     ;--------------set-methods----------------
     (define/public (set-local-player-sprite! pic-location)
       (send *player* set-sprite! (make-object bitmap% pic-location 'png/alpha #f))
       (send *player* set-radius! (round (/ (send (send *player* get-sprite) get-height) 2))))
     
     (define/public (set-remote-player-sprite! pic-location)
-      (set! remote-player-sprite (make-object bitmap% pic-location 'png/alpha #f)))
+      (set! remote-player-sprite (make-object bitmap% pic-location 'png/alpha #f))
+      (set! remote-player-radius (round (/ (send remote-player-sprite get-height) 2))))
     
     ;---------------get-methods---------------
     
     (define/public (get-remote-player-sprite) remote-player-sprite)
     (define/public (get-width) WIDTH)
     (define/public (get-height) HEIGHT)
-    
+    (define/public (get-network) network)
     
     
     (define (draw)
       (clear)
       (draw-object-list *object-list*)
-      (draw-object-list (send *network* get-remote-objects)) 
+      (draw-object-list (send network get-remote-objects)) 
       (show))
     
     (define (draw-object-list object-list)
@@ -47,7 +51,7 @@
     (define (update)
       (update-snowballs)
       (update-player)
-      (collisionhandler (append *object-list* (send *network* get-remote-objects)))
+      (collisionhandler (append *object-list* (send network get-remote-objects)))
       (draw))
     
     (define (update-snowballs)
@@ -77,7 +81,7 @@
         
         (define (can-go-there? x y)
           (let ((result #t)
-                (remote-objects (send *network* get-remote-objects))
+                (remote-objects (send network get-remote-objects))
                 (moved-player (new player% [x (+ (send *player* get-x) x)] [y (+ (send *player* get-y) y)] [radius (send *player* get-radius)])))
             (begin 
               (for-each (lambda (object)
@@ -110,7 +114,7 @@
               (cond
                 ((and (is-a? other-object player%)            ;does my snowball hit a player?
                       (not (eq? other-object *player*)))      ;does my snowball hit the opponent or me? Nothing will happen if I hit myself.
-                 (begin (send *network* hit!)
+                 (begin (send network hit!)
                         (semaphore-wait *object-list-semaphore*)
                         (set! *object-list* (remove snowball *object-list* eq?))
                         (semaphore-post *object-list-semaphore*))) ;if so, remove the snowball
@@ -164,5 +168,5 @@
 
 
 
-
+(define new-game (new Game%))
 (send new-game start-game)
