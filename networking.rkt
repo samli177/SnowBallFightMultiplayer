@@ -142,7 +142,7 @@
     (define snowball-sprite (make-object bitmap% "snowballe.png" 'png/alpha #f))
     (define snowball-radius (/ (send snowball-sprite get-height) 2))
     
-    (define player-sprite (make-object bitmap% "blue-player.png" 'png/alpha #f))
+    (define player-sprite (make-object bitmap% "blue_player.png" 'png/alpha #f))
     (define player-radius (/ (send player-sprite get-height) 2))
     
     (define bunker-sprite (make-object bitmap% "bunker.png" 'png/alpha #f))
