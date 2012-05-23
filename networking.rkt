@@ -126,10 +126,10 @@
     (define (set-remote-sprites-weapon!)
       (if (= (send *player* get-side) 1)
           (begin
-            (set! player-sprite (make-object bitmap% "pics/red_playerweapon.png" 'png/alpha #f))
+            (set! player-sprite (make-object bitmap% "pics/blue_playerweapon.png" 'png/alpha #f))
             (set! player-radius (round (/ (send player-sprite get-height) 2))))
           (begin
-            (set! player-sprite (make-object bitmap% "pics/blue_playerweapon.png" 'png/alpha #f))
+            (set! player-sprite (make-object bitmap% "pics/red_playerweapon.png" 'png/alpha #f))
             (set! player-radius (round (/ (send player-sprite get-height) 2)))))
       (set! snowball-sprite (make-object bitmap% "pics/weapon-projectile.png" 'png/alpha #f))
       (set! snowball-radius (/ (send snowball-sprite get-height) 2)))
