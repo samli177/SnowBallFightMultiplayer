@@ -198,7 +198,8 @@
 
 (define weapon%
   (class on-screen%
-    (super-new)))
+    (super-new)
+    (inherit set-x! set-y! set-radius! set-sprite!)))
     
     
 
