@@ -124,7 +124,7 @@
     
     
     (define (set-remote-sprites-weapon!)
-      (if (= (send (send new-game get-player) get-side) 1)
+      (if (= (send *player* get-side) 1)
           (begin
             (set! player-sprite (make-object bitmap% "pics/red_playerweapon.png" 'png/alpha #f))
             (set! player-radius (round (/ (send player-sprite get-height) 2))))
