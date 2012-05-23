@@ -98,6 +98,7 @@
                 (speed 30)
                 (power 0)
                 (powerbar #f)
+                (snowball-sprite (make-object bitmap% "snowballe.png" 'png/alpha #f))
                 (youlosepic (make-object bitmap% "youlosepic.png" 'png/alpha #f)))
   
     ;---------------set-methods-------------------
@@ -130,7 +131,7 @@
                              (begin
                                (set! power 0)
                                (new snowball% 
-                                    [sprite (make-object bitmap% "snowballe.png" 'png/alpha #f)]
+                                    [sprite snowball-sprite]
                                     [x (+ (* side (+ (get-radius) 2)) (get-x))]
                                     [y (get-y)]
                                     [speed (* side old-power)]))))
