@@ -169,7 +169,7 @@
       (send gui draw-text "After you have either connected or started listening, press pray game!" 200 350 (send gui get-pen) (send gui get-brush)))
     
     (define/public (bunkeradder number) ;adds bunkers in the quantity of "number" to the battle field
-      (let* ((sprite (make-object bitmap% "bunker.png" 'png/alpha #f))
+      (let* ((sprite (make-object bitmap% "pics/bunker.png" 'png/alpha #f))
              (radius (/ (send sprite get-height) 2))
              (generated-x (+ 300 (random 600)))
              (generated-y (+ 100 (random 300))))
