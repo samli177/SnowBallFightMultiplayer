@@ -69,7 +69,7 @@
     (define (interpet wordlst)
       (cond 
         ((eq? (string->symbol (car wordlst)) 'hit) (hit-player!)) ; could possibly be the cause of data-corruption?
-        ((eq? (string->symbol (car wordlist)) 'weapon-is-taken!) (send new-game remove-weapon!))
+        ((eq? (string->symbol (car wordlst)) 'weapon-is-taken!) (send new-game remove-weapon!))
         (else (update-remote-objectlist wordlst))))
     
     ; Decodes information in message-string to construct a list approximating the other computers *object-list* and updates remote-object-list.
