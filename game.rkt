@@ -248,10 +248,11 @@
                                                     blue_playerweapon))
                      (if (occurs? weapon *object-list*) 
   ;is the weapon in my object-list or does it come from the other players list? 
-                         (remove-weapon!)              
-      ;remove the weapon
+                         (begin 
+                           (remove-weapon!) (send network weapon-is-taken!))             
+      ;remove the weapon and set sprites
                          (send network weapon-is-taken!)))))) 
-      ;or tell the other computer do to it
+      ;or tell the other computer to do it
       
       (if (not (null? crashlist))
           (let ((first-object (car crashlist))) 
