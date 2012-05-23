@@ -76,7 +76,7 @@
                 (moved-player (new player% [x (+ (send *player* get-x) x)] [y (+ (send *player* get-y) y)] [radius (send *player* get-radius)])))
             (begin 
               (for-each (lambda (object)
-                          (if (not (or (is-a? object powerbar%) (eq? object *player*)))
+                          (if (not (or (is-a? object powerbar%) (eq? object *player*) (is-a? object weapon%)))
                               (if (collision? object moved-player)
                                   (set! result #f)))) (append *object-list* remote-objects))
               result)))
