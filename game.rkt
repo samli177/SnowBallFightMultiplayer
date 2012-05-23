@@ -122,11 +122,6 @@
     
     
     
-    
-    
-    
-    
-    
     (define (draw)
       (send gui clear)
       (draw-object-list *object-list*)
@@ -143,16 +138,13 @@
     
     
     
-    
-    
-    
     (define (directional-vector x1 y1 x2 y2)
       (let* ((x (- x2 x1))
              (y (- y2 y1))
              (length (sqrt (+ (sqr x) (sqr y)))))
         (if (= length 0) (cons 0 0) (cons (/ x length) (/ y length)))))
     
-    
+;-----------Function to handle collissions----------
     
     (define (collisionhandler crashlist)
       
@@ -185,9 +177,7 @@
               (begin (send *player* set-weapon! weapon) ;the player gets the weapon
                      (if (occurs? weapon *object-list*) ;is the weapon in my object-list or does it come from the other players list? 
                          (set! *object-list* (remove weapon *object-list*))
-                         (send network weapon-is-taken!))))))
-      
-      
+                         (send network weapon-is-taken!)))))) 
       
       (if (not (null? crashlist))
           (let ((first-object (car crashlist))) 
