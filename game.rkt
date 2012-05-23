@@ -67,6 +67,7 @@
       (semaphore-post *object-list-semaphore*))
     
     (define (update-player) 
+      ;makes a normalized vector that points from the player to the mouse
       (let* ((dir-v (directional-vector 
                      (send *player* get-x) (send *player* get-y) mouse-x mouse-y))
              (dir-x (car dir-v))
@@ -75,6 +76,7 @@
              (delta-y (round (* (send *player* get-speed) dir-y))))
         
         (define (update-player-x!)
+          ;moves the players x coordinate according to the vector
           (if (>= (abs (- (send *player* get-x) mouse-x)) 
                   (send *player* get-speed)) 
               (send *player* set-x! (+ (send *player* get-x) delta-x))
@@ -82,10 +84,12 @@
         ;To avoid oscillation around mouse position
         
         (define (update-player-y!)
+          ;moves the players y coordinate according to the vector
           (if (>= (abs (- (send *player* get-y) mouse-y))
                   (send *player* get-speed)) 
               (send *player* set-y! (+ (send *player* get-y) delta-y))
               (send *player* set-y! mouse-y)))
+        ;To avoid oscillation around mouse position
         
         (define (can-go-there? x y)
           (let ((result #t)
@@ -103,13 +107,15 @@
                                   (set! result #f)))) 
                         (append *object-list* remote-objects))
               result)))
+        ;Aunction that makes movement into objects impossible, 
+        ;apart from youself, weapon on the ground and your powerbar.
         
         (send *player* update-powerbar!)
         (if (can-go-there? delta-x delta-y)
             (begin
               (update-player-x!)
               (update-player-y!)))))
-    
+        
     
     ;-------functions to add items to the game----------------------------------
     
