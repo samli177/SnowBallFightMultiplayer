@@ -186,12 +186,8 @@
                      (if (occurs? weapon *object-list*) ;is the weapon in my object-list or does it come from the other players list? 
                          (set! *object-list* (remove weapon *object-list*))
                          (send network weapon-is-taken!))))))
-      
-<<<<<<< HEAD
-    (define/public (remove-weapon!)
-      (display "weapon removed"))
-=======
->>>>>>> cc9e1137bb8fd2b8e7a523e7c1f0b8f1712682da
+
+
       
       
       (if (not (null? crashlist))
