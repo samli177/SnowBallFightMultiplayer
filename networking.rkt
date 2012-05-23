@@ -140,7 +140,7 @@
     
     ;-------------------command-table init---------------------
     (define snowball-sprite (make-object bitmap% "snowballe.png" 'png/alpha #f))
-    (define snowball-raduis (/ (send snowball-sprite get-height) 2))
+    (define snowball-radius (/ (send snowball-sprite get-height) 2))
     
     (define bunker-sprite (make-object bitmap% "bunker.png" 'png/alpha #f))
     (define bunker-radius (/ (send bunker-sprite get-height) 2))
@@ -150,7 +150,7 @@
     (define (remote-make-snowball . args)
       (new snowball% 
            [sprite snowball-sprite]
-           [radius (snowball-raduis)]
+           [radius snowball-radius]
            [x (string->number (car args))]
            [y (string->number (cadr args))]))
     
