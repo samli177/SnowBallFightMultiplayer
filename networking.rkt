@@ -149,7 +149,7 @@
                                       (number->string 
                                        (send (car iter-lst) get-y))))
              (msg-loop (cdr iter-lst)))
-             ((is-a? (car iter-lst) weapon-box%)
+             ((is-a? (car iter-lst) weapon%)
              (set! str (string-append str 
                                       " make-bunker " 
                                       (number->string 
@@ -207,7 +207,7 @@
            [y (string->number (cadr args))]))
     
      (define (remote-make-weapon-box . args)
-      (new bunker% 
+      (new weapon% 
            [sprite weapon-box-sprite]
            [radius weapon-box-radius]
            [x (string->number (car args))]
