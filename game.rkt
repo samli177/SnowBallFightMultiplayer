@@ -143,7 +143,7 @@
              (radius (send sprite get-height))
              (generated-x (+ 300 (random 600)))
              (generated-y (+ 100 (random 300))))
-        (begin (set! *object-list* (cons (new weapon%
+        (begin (sleep (random 30))(set! *object-list* (cons (new weapon%
                                               [sprite sprite]
                                               [radius radius]
                                               [x generated-x]
