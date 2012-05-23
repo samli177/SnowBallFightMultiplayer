@@ -53,8 +53,8 @@
       ("Listen" menu 
                 (lambda (a b) 
                   (begin
-                    (send new-game set-local-player-sprite! "red_player.png")
-                    (send new-game set-remote-player-sprite! "blue_player.png")
+                    (send new-game set-local-player-sprite! "pics/red_player.png")
+                    (send new-game set-remote-player-sprite! "pics/blue_player.png")
                     (send *player* set-xy! 60 300)     ;coordinates for spawning
                     (send (send new-game get-network) listen)))))
     
@@ -62,8 +62,8 @@
       ("Connect" menu 
                  (lambda (a b) 
                    (begin
-                     (send new-game set-local-player-sprite! "blue_player.png")
-                     (send new-game set-remote-player-sprite! "red_player.png")
+                     (send new-game set-local-player-sprite! "pics/blue_player.png")
+                     (send new-game set-remote-player-sprite! "pics/red_player.png")
                      (send *player* set-xy! 1140 300) ;coordinates for spawning
                      (send new-game bunkeradder 
                            (string->number (get-text-from-user 
