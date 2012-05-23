@@ -184,7 +184,7 @@
           (if (and (is-a? other-object player%) (occurs? other-object *object-list*)) ;does the weapon collide with a player? And is that player me?
               (begin (send *player* set-weapon! weapon) ;the player gets the weapon
                      (if (occurs? weapon *object-list*) ;is the weapon in my object-list or does it come from the other players list? 
-                         (set! *object-list* remove weapon *object-list*)
+                         (set! *object-list* (remove weapon *object-list*))
                          (send network weapon-is-taken!))))))
       
       
@@ -227,7 +227,7 @@
     (define/public (start-game)
       (send gui show-gui)
       (send gui draw-text "welcome to snowballfight" 350 300 (send gui get-pen) (send gui get-brush))
-      (send gui draw-text "After you have either connected or started listening, press pray game!" 200 350 (send gui get-pen) (send gui get-brush)))
+      (send gui draw-text "After you have either connected or started listening, press pray game!" 200 350 (send gui get-pen) (send gui get-brush)))))
     
     
     
