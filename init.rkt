@@ -109,7 +109,7 @@
     (define/public (set-speed! new-speed) (set! speed new-speed))
     (define/public (set-power! new-power) (set! power new-power))
     (define/public (set-weapon! new-weapon) (set! weapon new-weapon))
-    
+        
     ;---------------get-methods------------------
     (define/public (get-hp) hp)
     (define/public (alive?) (not (= hp 0)))
