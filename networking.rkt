@@ -69,7 +69,8 @@
     (define (interpet wordlst)
       (cond 
         ((eq? (string->symbol (car wordlst)) 'hit) (hit-player!)) ; could possibly be the cause of data-corruption?
-        ((eq? (string->symbol (car wordlst)) 'weapon-taken!) (send new-game remove-weapon!) (send *player* set-weapon! (new weapon%)))
+        ((eq? (string->symbol (car wordlst)) 'weapon-taken!) (send new-game remove-weapon!) 
+                                                             (set-remote-sprites-weapon!))
         ((eq? (string->symbol (car wordlst)) 'you-win) (send new-game win!)) 
         (else (update-remote-objectlist wordlst))))
     
@@ -120,6 +121,20 @@
       (if (or (null? charlist) (equal? (car charlist) #\space))
           ""
           (string-append (string (car charlist)) (first-word (cdr charlist)))))
+    
+    
+    (define (set-remote-sprites-weapon!)
+      (if (= (send (send new-game get-player) get-side) 1)
+          (begin
+            (set! player-sprite (make-object bitmap% "pics/red_playerweapon.png" 'png/alpha #f))
+            (set! player-radius (round (/ (send player-sprite get-height) 2))))
+          (begin
+            (set! player-sprite (make-object bitmap% "pics/blue_playerweapon.png" 'png/alpha #f))
+            (set! player-radius (round (/ (send player-sprite get-height) 2)))))
+      (set! snowball-sprite (make-object bitmap% "pics/snowballe.png" 'png/alpha #f))
+      (set! snowball-raduis (/ (send snowball-sprite get-height) 2)))
+
+            
     
     ;-----------------construction of messages--------------------
     (define/public (make-message lst) ; Constructs a message string from list of objects
