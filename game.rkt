@@ -15,6 +15,7 @@
            (mouse-x 0)
            (mouse-y 0)
            (gui (new gui-interface%))
+           (update-semaphore (make-semaphore 1))
            (network (new network-session%)))
            
     ;--------------set-methods----------------
@@ -49,10 +50,12 @@
                 object-list))
     
     (define (update)
+      (semaphore-wait update-semaphore)
       (update-snowballs)
       (update-player)
       (collisionhandler (append *object-list* (send network get-remote-objects)))
-      (draw))
+      (draw)
+      (semaphore-post update-semaphore))
     
     (define (update-snowballs)
       (define templist (cons (car *object-list*) (cdr *object-list*))) ;; creates new list with the same elements as *object-list*
