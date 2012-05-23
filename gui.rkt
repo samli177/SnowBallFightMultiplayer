@@ -66,10 +66,6 @@
                      (send new-game set-local-player-sprite! "pics/blue_player.png")
                      (send new-game set-remote-player-sprite! "pics/red_player.png")
                      (send *player* set-xy! 1140 300) ;coordinates for spawning
-                     (new timer% 
-                          [notify-callback (send new-game weaponadder)]
-                          [interval (* 1000 (random 30))]
-                          [just-once? #t])
                      (send new-game bunkeradder 
                            (string->number (get-text-from-user 
                                             "Please enter how many bunkers you 
@@ -78,7 +74,11 @@ want on the battle field" "Type a number and press ok or enter")))
                      (send (send new-game get-network) set-host! 
                            (get-text-from-user "Connect" "Enter target IP:"))
                      (send (send new-game get-network) connect)
-                     (send new-game start-update)))))
+                     (send new-game start-update)
+                     (new timer% 
+                          [notify-callback (send new-game weaponadder)]
+                          [interval (* 1000 (random 30))]
+                          [just-once? #t])))))
     
     (instantiate menu-item%;adds the choise "Pray Game" to the menu-buttons list
       ("Pray Game" menu (lambda (a b) (send new-game start-update))))
