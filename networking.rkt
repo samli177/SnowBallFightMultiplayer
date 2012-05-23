@@ -149,6 +149,14 @@
                                       (number->string 
                                        (send (car iter-lst) get-y))))
              (msg-loop (cdr iter-lst)))
+             ((is-a? (car iter-lst) weapon-box%)
+             (set! str (string-append str 
+                                      " make-bunker " 
+                                      (number->string 
+                                       (send (car iter-lst) get-x)) " "
+                                      (number->string 
+                                       (send (car iter-lst) get-y))))
+             (msg-loop (cdr iter-lst)))
             (else (msg-loop (cdr iter-lst)))))
         (msg-loop lst)))
     
@@ -165,6 +173,12 @@
       (make-object bitmap% "pics/bunker.png" 'png/alpha #f))
     
     (define bunker-radius (/ (send bunker-sprite get-height) 2))
+    
+    
+    (define weapon-box-sprite 
+      (make-object bitmap% "pics/weapon-box.png" 'png/alpha #f))
+    
+    (define weapon-box-radius (/ (send weapon-box-sprite get-height) 2))
     
     (define empty-powerbar 
       (new powerbar% 
@@ -192,9 +206,17 @@
            [x (string->number (car args))]
            [y (string->number (cadr args))]))
     
+     (define (remote-make-weapon-box . args)
+      (new bunker% 
+           [sprite weapon-box-sprite]
+           [radius weapon-box-radius]
+           [x (string->number (car args))]
+           [y (string->number (cadr args))]))
+    
     (put 'remote-commands 'make-snowball remote-make-snowball)
     (put 'remote-commands 'make-player remote-make-player)
     (put 'remote-commands 'make-bunker remote-make-bunker)
+    (put 'remote-commands 'make-weapon-box remote-make-weapon-box)
     
     ;---------------------interface--------------------------
     
