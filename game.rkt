@@ -298,7 +298,8 @@
     
     (define/public (start-game)
       (send gui show-gui)
-      (send gui draw-pic startscreen 0 0))))
+      (send gui draw-pic startscreen 0 0)
+      (void))))
     
 
 
