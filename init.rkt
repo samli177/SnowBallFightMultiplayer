@@ -94,7 +94,7 @@
     (inherit get-x get-y get-radius)
     (super-new)
     (init-field (hp 2)   ; hitpoints
-                (side 1) ; positive if player is on the left
+                (side 1) ; 1 if player is on the left, -1 if on the right
                 (speed 30)
                 (power 0)
                 (powerbar #f)
