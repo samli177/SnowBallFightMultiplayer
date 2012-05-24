@@ -15,7 +15,7 @@
     (super-new)
     (field (WIDTH 21)
            (HEIGHT 21)
-           (*update-loop* #f)
+           (update-loop #f)
            (mouse-x 0)
            (mouse-y 0)
            (background-image 
@@ -283,14 +283,11 @@
       (set! mouse-x x)
       (set! mouse-y y))
     
-    (define/public (exit-game)
-      (hide-gui *gui*))
-    
     (define/public (stop-update)
-      (send *update-loop* stop))
+      (send update-loop stop))
     
     (define/public (start-update)
-      (set! *update-loop* (new timer%
+      (set! update-loop (new timer%
                                [notify-callback update]
                                [interval 20]
                                [just-once? #f])))
