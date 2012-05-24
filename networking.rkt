@@ -9,10 +9,15 @@
    
     (field (inport null) ; Bound to tcp-port by listen/connect
            (outport null)
-           (player-sprite (make-object bitmap% "pics/blue_player.png" 'png/alpha #f))
+           (player-sprite 
+            (make-object bitmap% "pics/blue_player.png" 'png/alpha #f))
            (player-radius 0)
-           (remote-object-list '()) ; Contains the moast recent representation of the other players *object-list when networking in active.
-           (change-check '()) ; Used to make sure that the string constucted from *object-list* is sent only once per update-loop.
+           (remote-object-list '()) 
+           ; Contains the moast recent representation of the other players 
+           ;*object-list* when networking in active.
+           (change-check '()) 
+           ;Used to make sure that the string constucted from *object-list* 
+           ;is sent only once per update-loop.
            (syncflag-semaphore (make-semaphore 1)) 
            (remote-object-list-semaphore (make-semaphore 1))
            (send-semaphore (make-semaphore 1))
@@ -21,12 +26,16 @@
     
     ;--------actual networking-stuff-------
     
-    ; Thread that listens for message-strings from tcp-port 'inport' and sends the messages (as lists of words) to the interpet proc.
+    ; Thread that listens for message-strings from tcp-port 'inport' and 
+    ; sends the messages (as lists of words) to the interpet proc.
     (define (listen-for-data)
       (define remote-word-list '())
       (define (loop)
-        (set! remote-word-list (string->wordlist (read-line inport 'any))) ; Read tcp-message and convert the recieved string to a list of words 
-        (if (eq? (string->symbol (car remote-word-list)) 'sync) ; If message is 'sync set syncflag true to allow send-thread to send another *object-list* message.
+        (set! remote-word-list (string->wordlist (read-line inport 'any))) 
+        ; Read tcp-message and convert the recieved string to a list of words 
+        (if (eq? (string->symbol (car remote-word-list)) 'sync) 
+            ; If message is 'sync set syncflag true to allow send-thread to 
+            ; send another *object-list* message.
             (begin (semaphore-wait syncflag-semaphore) 
                    (set! sync #t) 
                    (semaphore-post syncflag-semaphore))
@@ -34,7 +43,8 @@
         (loop))
       (loop))
     
-    ; Thread that converts the relevant information in *object-list* to a message-string and sends it through the tcp-port.
+    ; Thread that converts the relevant information in *object-list* 
+    ; to a message-string and sends it through the tcp-port.
     (define (send-thread)
       (let ((tempsync #f)
             (temp-object-list '()))
@@ -47,8 +57,10 @@
           (set! tempsync sync) 
           (semaphore-post syncflag-semaphore)
           
-          (if (and (not (eq? change-check temp-object-list)) tempsync) ; If *object-list has changed since last time and syncflag is #t 
-              (begin (send-string (make-message temp-object-list)) ; Construct message-sring from object-list and send it.
+          (if (and (not (eq? change-check temp-object-list)) tempsync) 
+              ; If *object-list has changed since last time and syncflag is #t 
+              (begin (send-string (make-message temp-object-list)) 
+                     ; Construct message-sring from object-list and send it.
                      (set! change-check temp-object-list) 
                      (begin (semaphore-wait syncflag-semaphore) 
                             (set! sync #f) 
@@ -68,13 +80,15 @@
     
     (define (interpet wordlst)
       (cond 
-        ((eq? (string->symbol (car wordlst)) 'hit) (hit-player!)) ; could possibly be the cause of data-corruption?
-        ((eq? (string->symbol (car wordlst)) 'weapon-taken!) (send new-game remove-weapon!) 
-                                                             (set-remote-sprites-weapon!))
+        ((eq? (string->symbol (car wordlst)) 'hit) (hit-player!)) 
+        ((eq? (string->symbol (car wordlst)) 'weapon-taken!) 
+         (send new-game remove-weapon!) 
+         (set-remote-sprites-weapon!))
         ((eq? (string->symbol (car wordlst)) 'you-win) (send new-game win!)) 
         (else (update-remote-objectlist wordlst))))
     
-    ; Decodes information in message-string to construct a list approximating the other computers *object-list* and updates remote-object-list.
+    ; Decodes information in message-string to construct a list approximating
+    ; the other computers *object-list* and updates remote-object-list.
     (define (update-remote-objectlist word-list)
       (let ((temp-object-list '()))
         (define (new-temp wordlist) ; creates new temporary remote-object-list 
@@ -101,7 +115,8 @@
         (for-each (lambda (object) (if (is-a? object player%) 
                                        (send object hit!))) temp-object-list)))
     
-    ; Converts string to list of "wordstrings" ex. "Hello World!" -> '("Hello" "World")
+    ; Converts string to list of "wordstrings" 
+    ; ex. "Hello World!" -> '("Hello" "World")
     ; (not fully generalised)
     (define (string->wordlist string) 
       (let ((current-word ""))
@@ -126,18 +141,23 @@
     (define (set-remote-sprites-weapon!)
       (if (= (send *player* get-side) 1)
           (begin
-            (set! player-sprite (make-object bitmap% "pics/blue_playerweapon.png" 'png/alpha #f))
+            (set! player-sprite 
+                  (make-object bitmap% "pics/blue_playerweapon.png" 'png/alpha #f))
             (set! player-radius (round (/ (send player-sprite get-height) 2))))
           (begin
-            (set! player-sprite (make-object bitmap% "pics/red_playerweapon.png" 'png/alpha #f))
+            (set! player-sprite 
+                  (make-object bitmap% "pics/red_playerweapon.png" 'png/alpha #f))
             (set! player-radius (round (/ (send player-sprite get-height) 2)))))
-      (set! snowball-sprite (make-object bitmap% "pics/weapon-projectile.png" 'png/alpha #f))
+      (set! snowball-sprite 
+            (make-object bitmap% "pics/weapon-projectile.png" 'png/alpha #f))
       (set! snowball-radius (/ (send snowball-sprite get-height) 2)))
 
             
     
     ;-----------------construction of messages--------------------
-    (define/public (make-message lst) ; Constructs a message string from list of objects
+ 
+    ; Constructs a message string from list of objects
+    (define/public (make-message lst) 
       (let ((str ""))
         (define (msg-loop iter-lst)
           (cond
@@ -264,7 +284,9 @@
     (define/public (send-string string)
       (semaphore-wait send-semaphore)
       (display string outport)
-      (newline outport) ; newline + empty-string seems to be the only way to get racket to send anything over tcp...
+      (newline outport)
+      ; newline + empty-string seems to be the only way to get 
+      ; racket to send anything over tcp...
       (display "" outport)
       (semaphore-post send-semaphore))
     
